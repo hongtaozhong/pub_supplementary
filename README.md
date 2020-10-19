@@ -1,2 +1,11 @@
 # pub_supplementary
-Supplementary material for publications
+This repo provides supplementary material for Hongtao Zhong's following publications: 
+
+PCI_H2/
+
+* Zhong, Hongtao, et al. "Thermal-chemical instability of weakly ionized plasma in a reactive flow." Journal of Physics D: Applied Physics 52.48 (2019): 484001.
+
+PCI_Stability/
+
+* Zhong, Hongtao, et al. "Dynamics and Chemical Mode Analysis of Plasma Thermal-Chemical Instability." In preparation.
+
