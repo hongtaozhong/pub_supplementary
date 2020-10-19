@@ -1,0 +1,89 @@
+#
+# N2-O2 TEST CASE
+# INPUT DATA FILE
+# ZDPLASKIN
+#
+# This test case corresponds to an N2-O2 plasma consisting of electrons, molecular
+# ions, and neutrals. 
+#
+
+ELEMENTS
+e N O
+END
+
+SPECIES
+
+
+N2 O2
+N2^+ O2^+ O2^-
+e(W) N2(W)^+ O2(W)^+ O2(W)^-
+e 
+
+END
+
+BOLSIG
+N2 O2
+END
+
+REACTIONS
+
+$ double precision :: conv_time
+$ conv_time = 5.0d-3 
+
+#O2 ionization backup: 4.9d-9*exp(-657/EN)
+# Ionization
+e + N2 => e + e + N2^+         !   BOLSIG+ N2 -> N2+(X)
+e + O2 => e + e + O2^+         !   BOLSIG+ O2->O2+  
+
+# Attachment
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+e + O2 + N2 => O2^- + N2               ! 1.07d-31*(300.0d0/Te)**2*exp(-70.0d0/Tgas)*exp(1500.0d0*(Te-Tgas)/(Te*Tgas))
+e + O2 + O2 => O2^- + O2               ! 1.40d-29*(300.0d0/Te)*exp(-600.0d0/Tgas)*exp(700.0d0*(Te-Tgas)/(Te*Tgas))
+
+# Detachment
+O2^- + N2 => O2 + N2 + e               ! 1.9d-12*(Tgas/300)**0.5*exp(-4990.0d0/Tgas)
+O2^- + O2 => O2 + O2 + e               ! 2.7d-10*(Tgas/300)**0.5*exp(-5590.0d0/Tgas)
+
+
+# Electron-Ion Recombination
+e + N2^+ => N2                     	! 2.0d-7*(300/Te)**0.5
+e + O2^+ => O2                	! 2.0d-7*(300/Te)**0.5
+
+# Ion-Ion Recombination
+O2^- + N2^+ => O2 + N2                	! 2.0d-7*(300/Tgas)**0.5*(1+ (300/Tgas)**2)
+O2^- + O2^+ => O2 + O2                	! 2.0d-7*(300/Tgas)**0.5*(1+ (300/Tgas)**2)
+
+
+# Convective Flow for Charged Particles
+
+
+e => e(W)                      	!   1.0d0 / conv_time
+N2^+ => N2(W)^+                	!   1.0d0 / conv_time
+O2^+ => O2(W)^+              	!   1.0d0 / conv_time
+O2^- => O2(W)^-              	!   1.0d0 / conv_time
+
+
+
+
+
+
+
+
+
+
+
+
+END
+
+
+
+
+
+
+
+
+
+
+
+
+
