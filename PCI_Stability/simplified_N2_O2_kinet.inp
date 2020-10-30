@@ -12,13 +12,10 @@ e N O
 END
 
 SPECIES
-
-
 N2 O2
 N2^+ O2^+ O2^-
 e(W) N2(W)^+ O2(W)^+ O2(W)^-
 e 
-
 END
 
 BOLSIG
@@ -44,7 +41,6 @@ e + O2 + O2 => O2^- + O2               ! 1.40d-29*(300.0d0/Te)*exp(-600.0d0/Tgas
 O2^- + N2 => O2 + N2 + e               ! 1.9d-12*(Tgas/300)**0.5*exp(-4990.0d0/Tgas)
 O2^- + O2 => O2 + O2 + e               ! 2.7d-10*(Tgas/300)**0.5*exp(-5590.0d0/Tgas)
 
-
 # Electron-Ion Recombination
 e + N2^+ => N2                     	! 2.0d-7*(300/Te)**0.5
 e + O2^+ => O2                	! 2.0d-7*(300/Te)**0.5
@@ -53,25 +49,11 @@ e + O2^+ => O2                	! 2.0d-7*(300/Te)**0.5
 O2^- + N2^+ => O2 + N2                	! 2.0d-7*(300/Tgas)**0.5*(1+ (300/Tgas)**2)
 O2^- + O2^+ => O2 + O2                	! 2.0d-7*(300/Tgas)**0.5*(1+ (300/Tgas)**2)
 
-
 # Convective Flow for Charged Particles
-
-
 e => e(W)                      	!   1.0d0 / conv_time
 N2^+ => N2(W)^+                	!   1.0d0 / conv_time
 O2^+ => O2(W)^+              	!   1.0d0 / conv_time
 O2^- => O2(W)^-              	!   1.0d0 / conv_time
-
-
-
-
-
-
-
-
-
-
-
 
 END
 

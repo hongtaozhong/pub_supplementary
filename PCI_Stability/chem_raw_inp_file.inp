@@ -1,0 +1,360 @@
+
+! H2/O2/N2 chemistry is HP Mech from  http://engine.princeton.edu/mechanism/HP-Mech.html   
+! N submech is added in this work
+!
+!****************************************************************************************!
+!																						 !
+!                                  CHEMISTRY INPUT FILE                                  !
+!																						 !
+!****************************************************************************************!
+
+ELEMENTS
+
+H O N E
+
+END
+
+
+
+SPECIES
+
+! C0 species
+H              H2             O              O2             OH
+H2O            HO2            H2O2           N2  
+
+! N2 species
+N  NH  NH2 NH3 NNH N2H2 N2H3 N2H4 
+NO NO2 N2O NO3 HNO HONO HNO2 
+
+! Plasma species (Excited)
+N2(v1)  N2(v2)  N2(v3)  N2(v4)  N2(v5)  N2(v6)  N2(v7)  N2(v8)
+H2(v1)  H2(v2)  H2(v3)
+O2(v1)  O2(v2)  O2(v3)  O2(v4)  
+
+N2(A)   N2(B)   N2(a')  N2(C)   N(2D)
+O2(a1)  O2(b1)  O2*  O(1D)  O(1S) 
+O3
+
+! Plasma species (Ions)
+N2+    N4+
+H2+    H3+     O2+     O4+    
+H3O+     
+O-     O2-     O4-     
+OH-   
+E
+  
+
+END
+
+
+
+REACTIONS
+
+!*********************************************************************************
+!              H2/O2 mechanism of Burke et al. IJCK  (2011) with updates         !
+!                                                                                !
+!*********************************************************************************
+
+!======================
+!H2-O2 Chain Reactions
+!======================
+
+! Hong et al., Proceeding of the Combustion Institute (2011) 33, 309-316
+!H+O2<=>O+OH                   1.040E+14     0.000      15286.0
+!include low-T measurements. New fit reproduce Hong's data very well
+H+O2<=>O+OH                    7.260E+14    -0.235      15928.7
+! Baulch et al., Journal of Physical Chemical Reference Data (2005) 34, 758
+O+H2<=>H+OH                    3.818E+12     0.000       7948.0
+   DUPLICATE
+O+H2<=>H+OH                    8.792E+14     0.000      19170.0
+   DUPLICATE
+
+! Michael and Sutherland, Journal of Physical Chemistry (1988) 92, 3853 (1988)
+H2+OH<=>H2O+H                  2.160E+08     1.510       3430.0
+
+! Baulch et al., Journal of Physical Chemical Reference Data (2005) 34, 758
+!OH+OH=O+H2O                   3.340E+04     2.420      -1930.
+! new fit
+OH+OH=O+H2O                    9.320E+03     2.564      -2603.7
+!=============================
+! H2-O2 Dissociation Reactions
+!=============================
+H+H+H2<=>H2+H2                 1.015E+17    -0.600   0.0 
+H+H+M<=>H2+M                   6.523E+17    -1.000   -53
+   H2O/14.0/ N2/1.0/ O2/1.0/ H2/0.0/ H/20/
+
+! Tsang and Hampson, Journal of Physical Chemical Reference Data (1986) 15, 1087
+O+O+M<=>O2+M                   6.165E+15     -0.500      0.0
+   H2/2.5/ H2O/12/ 
+
+! Tsang and Hampson, Journal of Physical Chemical Reference Data (1986) 15, 1087
+!O+O+AR<=>O2+AR                 1.886E+13      0.000   -1788.0
+!O+O+HE<=>O2+HE                 1.886E+13      0.000   -1788.0
+
+! Tsang and Hampson, Journal of Physical Chemical Reference Data (1986) 15, 1087
+O+H+M<=>OH+M               	   4.714E+18     -1.000       0.0
+   H2/2.5/ H2O/12/  
+
+! HPL rate
+!Sellev?g et al., Journal of Physical Chemical A (2008) 112, 508505095
+H+OH(+M)=H2O(+M)           2.510E+13      0.234     -114.
+   LOW                     /4.50E+25     -3.064     1581.4/
+! Srinivasan et al.,International Journal of Chemical Kinetics (2006) 38, 211-219
+   TROE                    /0.72  1.0E-30 1.0E+30/
+   H2/3.0/ N2/2.00/ O2/2.0/ H2O /24.0/
+
+!=================================
+! Formation and Consumption of HO2
+!=================================
+
+! High-pressure limit from Troe, Proceeding of the Combustion Institute (2000) 28, 1463-1469
+! Low-pressure  limit is close to Michael et al., Journal of Physical Chemistry A (2002) 106, 5297-5313
+! refit the experimental data, resulting slightly different Centering factors 
+! from Fernandes et al., Physical Chemistry and Chemical Physics (2008) 10, 4313-4321
+!=================================================================================
+! MAIN BATH GAS IS N2 (Comment this reaction otherwise)
+! New fitting
+ H+O2(+M)<=>HO2(+M)            1.025E+12     0.604          -241.1
+  LOW                    	/1.736E+19    -1.230         0.0 /
+  TROE                   	/0.495  1.00E-30  1.00E+30 /
+  H2/2.0/ H2O/14/ O2/1.00/ 
+!=================================================================================
+! MAIN BATH GAS IS AR OR HE (Comment this reaction otherwise)
+! H+O2(+M)<=>HO2(+M)         	1.025E+12     0.604          -241.1
+!    LOW               		/1.676E+19     -1.290   129.3/
+!    TROE           		/0.471   1.0E-10 1.00E+30  1.00E+30/
+!    H2/3.4/ H2O/23/ O2/1.70/ 
+!=================================================================================
+
+! Michael et al., Proceeding of the Combustion Institute (2000) Vol. 28, pp.1471
+HO2+H=H2+O2                     2.750E+06     2.090    -1451.
+! reason to decrease Joe Michael's rate: 0.5 ppm of CH4 can affect O atom profile 
+! Mueller et al., International Journal of Chemical Kinetic (1999) Vol. 31, pp.113
+HO2+H<=>OH+OH           		7.079E+13     0.000        295.0
+
+!Silveira et al., J. Phys. Chem. A,2004, 108, 8721-8730
+!J. Phys. Chem. A 2000 104 3204-3210         
+! sum two channel up to new fit
+HO2+O<=>O2+OH           		3.210E+11     0.704       -534.3
+
+!New fit
+HO2+OH<=>O2+H2O         		7.44E+12       0.055      -915.2
+   DUPLICATE
+HO2+OH<=>O2+H2O         		1.17E+23      -2.156     23681.
+   DUPLICATE
+
+!=====================================
+!Formation and Consumption of H2O2
+!=====================================
+
+! Hong et al Proc Combust Inst 34(2013) 565-571
+HO2+HO2<=>H2O2+O2       		1.000E+14     0.000      11041.
+   DUPLICATE
+HO2+HO2<=>H2O2+O2       		1.900E+11     0.000      -1409.
+   DUPLICATE
+   
+! Troe, Combustion and Flame (2011) Vol.158, pp. 594-601
+! Rate constant is for Argon
+H2O2(+M)<=>OH+OH(+M)       		2.000E+12     0.900      48749.0
+   LOW            		/2.490E+24    -2.300      48749.0/
+   TROE        			/0.430 1.00E-30 1.00E+30/
+   H2O/7.5/ N2/1.5/ O2/1.5/ H2O2/7.7/
+! Efficiencies for H2 and CO taken from Li et al., International Journal of Chemical Kinetic (2004) Vol. 36, pp. 566-575
+   H2/3.7/ 
+
+! Tsang and Hampson, Journal of Physical Chemical Reference Data (1986) Vol. 15, pp. 1087
+
+!REF: ELLINGSON ET AL., J. PHYS. CHEM. A 111(51) (2007) 13554-13566. (FIT TO THE THEORETICAL RATE)
+H2O2+H<=>H2+HO2            		8.020E+06     2.000       3862.
+H2O2+H<=>H2O+OH            		7.060E+06     2.142       3412.
+H2O2+O<=>OH+HO2            		9.550E+06     2.000       3970.0
+
+! Hong et al., Journal of Physical Chemistry A (2010) Vol. 114, pp. 5718-5727
+H2O2+OH<=>HO2+H2O          		1.738E+12     0.000        318.0
+   DUPLICATE
+H2O2+OH<=>HO2+H2O          		7.586E+13     0.000       7269.0
+   DUPLICATE
+!=====================================
+! NOX SUBSET from HP MECH
+!=====================================
+
+2N+M<=>N2+M 6.53E+14 0.00 -218.90
+N2/ 0.0/ O/ 3.0/ N/ 3.0/ 
+2N+N2<=>2N2 3.01E+14 0.00 -251.61
+N+O+M<=>NO+M 1.96E+19 -1.00 0.00
+N2/ 0.0/ O2/ 0.0/ 
+N+O+N2<=>NO+N2 6.28E+16 -0.50 0.00
+N+O+O2<=>NO+O2 6.28E+16 -0.50 0.00
+N+HO2<=>NO+OH 1.02E+13 0.00 1987.20
+N+NO<=>N2+O 3.27E+12 0.30 0.00
+N+O2<=>NO+O 6.40E+09 1.00 6280.00
+N+OH<=>NO+H 3.80E+13 0.00 0.00
+NO+O(+M)<=>NO2(+M) 1.30E+15 -0.75 0.00
+LOW/ 4.72E+24 -2.87 1550.00/ 
+TROE/ 0.957 1E-90 8.332E+03/ 
+H2O/ 12.0/ H2/ 2.0/ 
+NO2+O<=>O2+NO 1.05E+14 -0.52 0.00
+NO2+H<=>NO+OH 1.32E+14 0.00 362.00
+NO+HO2<=>OH+NO2 5.00e+12 0.000 -477
+NO2+HO2<=>HONO+O2 1.446E+10 0.0 0.0
+H2O2+NO2<=>HO2+HONO 6.88E+02 3.027 12056
+NO2+NO2<=>2NO+O2 1.63E+12 0.00 26100.00
+N2O(+M)<=>N2+O(+M) 1.30E+12 0.00 62570.00
+LOW/ 4.00E+14 0.00 56600.00/ 
+H2O/ 7.5/ 
+N2O+O<=>O2+N2 3.70E+12 0.00 15936.00
+N2O+O<=>2NO 9.20E+13 0.00 27679.00
+N2O+H<=>N2+OH 6.40E+07 1.835 13492.00
+N2O+OH<=>HO2+N2 1.30E-02 4.72 36560.00
+N2O+OH<=>HNO+NO 1.20E-04 4.33 25080.00
+N2O+NO<=>NO2+N2 1.00E+14 0.00 49700.00
+N+NO2<=>N2O+O 3.49E+12 0.00 -437.18
+NO+H(+M)<=>HNO(+M) 1.52E+15 -0.41 0.00
+LOW/ 2.40E+14 0.206 -1550.00/ 
+SRI/ 0.82 1.0E-30 1.0E+30/ 
+N2/ 1.60/
+HNO+H<=>NO+H2 4.40E+11 0.72 650.00
+HNO+O<=>OH+NO 2.30E+13 0.00 0.00
+HNO+OH<=>H2O+NO 1.30E+07 0.00 -956.00
+HNO+HNO<=>H2O+N2O 8.51E+08 0.00 3080.00
+HNO+O2<=>HO2+NO 2.20E+10 0.00 9140.00
+NO+OH(+M)<=>HONO(+M) 5.97E+12 -0.05 -721.00
+LOW/ 1.524E+24 -2.51 -67.60/ 
+SRI/ 0.62 0.0 0.0/ 
+HNO+NO2<=>HONO+NO 6.02E+11 0.00 1990.00
+HONO+O<=>OH+NO2 1.20E+13 0.00 5960.00
+HONO+OH<=>H2O+NO2 1.70E+12 0.00 -520.00
+NO2+H2<=>HONO+H 7.33E+11 0.00 28800.00
+HONO+H<=>H2O+NO 8.10E+06 1.89 3845.24
+HONO+H<=>OH+HNO 5.60E+10 0.86 4968.01
+2HONO<=>NO+NO2+H2O 3.49E-01 3.64 12139.83
+
+!!! P. Gokulakrishnan, et al. J. Eng. Gas Turbines Power. 2018, 140(4): 041509.
+NO2+O(+M)=NO3(+M)                3.5E12   0.240       0 ! RAS/GLA08 HAH/TRO00
+   LOW  /2.5E20 -1.50 0/                                     ! RAS/GLA08 (M=N2)
+   TROE /0.71 1E-30 1700 1E30/                               ! RAS/GLA08 Fc=0.71*exp(-T/1700)
+HO2 + NO2 <=> HNO2 + O2          1.9000E+01        3.26     4983.0  
+H2 + NO2 <=> H + HNO2            2.4035E+00        3.73    32400.4   
+2NO2 <=> NO + NO3                9.6009E+09        0.73    20900.0  
+HNO2(+M)=HONO(+M)                2.5E14   0.000   32300 ! RAS/GLA08a
+     LOW  /3.1E18 0.0 31500/                                   !
+     TROE /1.149 1E-30 3125 1E30/                              !
+HNO2 + O <=> NO2 + OH            1.7000E+08        1.50     2000.0  
+HNO2 + OH <=> H2O + NO2          4.0000E+13        0.00        0.0  
+H + NO3 <=> NO2 + OH             6.0000E+13        0.00        0.0  
+NO3 + O <=> NO2 + O2             1.0000E+13        0.00        0.0  
+NO3 + OH <=> HO2 + NO2           1.4000E+13        0.00        0.0   
+HO2 + NO3 <=> NO2 + O2 + OH      1.5000E+12        0.00        0.0  
+NO2 + NO3 <=> NO + NO2 + O2      5.0000E+10        0.00     2940.0  
+NH3+M=NH2+H+M                    2.2E16   0.000   93470 ! SKR/GLA04 DAV/HAN90
+H + NH3 <=> H2 + NH2             6.4001E+05        2.39    10171.0  
+NH3 + O <=> NH2 + OH             9.4000E+06        1.94     6460.0  
+NH3 + OH <=> H2O + NH2           2.0000E+06        2.04      566.0  
+HO2 + NH3 <=> H2O2 + NH2         3.0003E+11       -0.00    22000.0 
+H + NH2 <=> H2 + NH              7.2000E+05        2.32     1590.0  
+NH2 + O <=> H + HNO              6.6000E+13        0.00        0.0  
+NH2 + O <=> NH + OH              7.0000E+12        0.00        0.0  
+duplicate 
+NH2 + O <=> NH + OH              8.6000E-01        4.01     1673.0  
+duplicate 
+NH2 + OH <=> H2O + NH            4.0000E+06        2.00     1000.0  
+HO2 + NH2 <=> NH3 + O2           9.2000E+05        1.94    -1152.0  
+NH2 + O2 <=> HNO + OH            6.2066E+07        1.23    35100.3  
+2NH2 <=> NH + NH3                5.0000E+13       -0.00    10000.0 
+NH + NH2 <=> H + N2H2            5.0000E+13        0.00        0.0  
+NH + NH2 <=> N + NH3             9.2000E+05        1.94     2444.0   
+N + NH2 <=> 2H + N2              7.0000E+13        0.00        0.0 
+HNO + NH2 <=> NH3 + NO           3.6000E+06        1.63    -1250.0  
+NH2 + NO <=> H2O + N2            2.8000E+20       -2.65     1258.0  
+NH2 + NO <=> NNH + OH            2.3000E+10        0.42     -814.0   
+HONO + NH2 <=> NH3 + NO2         7.1000E+01        3.02    -4940.0  
+NH2 + NO2 <=> H2O + N2O          1.6000E+16       -1.44      268.0    
+H + NH <=> H2 + N                3.0000E+13        0.00        0.0  
+NH + O <=> H + NO                9.2000E+13        0.00        0.0 
+NH + OH <=> H + HNO              2.0000E+13        0.00        0.0  
+NH + OH <=> H2O + N              5.0000E+11        0.50     2000.0 
+NH + O2 <=> HNO + O              4.6000E+05        2.00     6500.0  
+NH + O2 <=> NO + OH              1.3000E+06        1.50      100.0  
+2NH <=> 2H + N2                  2.5000E+13        0.00        0.0  
+N + NH <=> H + N2                3.0000E+13        0.00        0.0   
+NH + NO <=> H + N2O              2.9000E+14       -0.40        0.0 
+NH + NO <=> N2 + OH              2.2000E+13       -0.23        0.0  
+HONO + NH <=> NH2 + NO2          1.0000E+13        0.00        0.0  
+NH + NO2 <=> N2O + OH            1.0000E+13        0.00        0.0  
+NNH <=> H + N2                   6.5000E+07        0.00        0.0  
+H + NNH <=> H2 + N2              1.0000E+14        0.00        0.0  
+NNH + O <=> H + N2O              1.0000E+14        0.00        0.0  
+NNH + O <=> N2 + OH              8.0000E+13        0.00        0.0  
+NNH + O <=> NH + NO              5.0000E+13        0.00        0.0  
+NNH + OH <=> H2O + N2            5.0000E+13        0.00        0.0  
+NNH + O2 <=> HO2 + N2            2.0000E+14        0.00        0.0  
+NNH + O2 <=> H + N2 + O2         5.0000E+13        0.00        0.0  
+NH + NNH <=> N2 + NH2            5.0000E+13        0.00        0.0  
+NH2 + NNH <=> N2 + NH3           5.0000E+13        0.00        0.0 
+NNH + NO <=> HNO + N2            5.0000E+13        0.00        0.0   
+2NH2 <=> N2H4                    5.6003E+48      -11.30    11882.0   
+H + N2H4 <=> H2 + N2H3           7.0000E+12       -0.00     2500.0  
+N2H4 + O <=> N2H3 + OH           1.5000E+11        0.00    -1270.0  
+N2H4 + OH <=> H2O + N2H3         1.3000E+13        0.00     -318.0  
+N2H4 + NH2 <=> N2H3 + NH3        3.9000E+12       -0.00     1500.0  
+N2H3 <=> H + N2H2                3.6085E+47      -10.38    69009.7   
+2NH2 <=> H + N2H3                1.2000E+12       -0.03    10084.0   
+H + N2H3 <=> H2 + N2H2           2.4000E+08        1.50      -10.0  
+N2H3 + O <=> N2H2 + OH           1.7000E+08        1.50     -646.0 
+N2H3 + O <=> HNO + NH2           3.0000E+13        0.00        0.0  
+N2H3 + O => H + NH2 + NO         3.0000E+13        0.00        0.0   
+N2H3 + OH <=> H2O + N2H2         1.2000E+06        2.00    -1192.0 
+N2H3 + OH <=> HNO + NH3          1.0000E+12       -0.00    15000.0   
+HO2 + N2H3 <=> H2O2 + N2H2       1.4000E+04        2.69    -1600.0  
+HO2 + N2H3 <=> N2H4 + O2         9.2000E+05        1.94     2126.0  
+N2H3 + NH2 <=> N2H2 + NH3        9.2000E+05        1.94    -1152.0   
+N2H3 + NH <=> N2H2 + NH2         2.0000E+13        0.00        0.0  
+N2H2+M=NNH+H+M                   1.9E27  -3.050   66107 ! SKR/GLA04 DEA/BOZ00 M=N2
+ H2O/7/
+H + N2H2 <=> H2 + NNH            8.5000E+04        2.63      230.0   
+N2H2 + O <=> NNH + OH            3.3000E+08        1.50      497.0 
+N2H2 + O <=> NH2 + NO            1.0000E+13        0.00        0.0 
+N2H2 + OH <=> H2O + NNH          5.9000E+01        3.40     1360.0 
+N2H2 + NH2 <=> NH3 + NNH         8.8000E-02        4.05     1610.0  
+N2H2 + NH <=> NH2 + NNH          2.4000E+06        2.00    -1192.0
+N2H2 + NO <=> N2O + NH2          4.0000E+12       -0.00    11922.0 
+
+!=====================================
+! O3 SUBSET from HP MECH
+!=====================================
+! H. Zhao, et al. Combustion and Flame 173 (2016) 187-194.
+O3(+M)=O2+O(+M)			1.37E+15	-0.67	25990
+LOW	/2.275E+28	-4.37	27297/
+Troe	/0.6417	3.91E-04	8680.74	6060.75/
+N2/1.5/ H2/3.0/	O2/1.50/ O3/3.75/ O/6.0/
+!!O3+O is taken from
+!!Atkinson, R.; Baulch, D.L.; Cox, R.A.; Crowley, J.N.; Hampson, R.F.; Hynes, R.G.; Jenkin, M.E.; Rossi, M.J.; Troe, J.
+!!Evaluated kinetic and photochemical data for atmospheric chemistry: Volume I - gas phase reactions of Ox, HOx, NOx and SOx species
+!!Atmos. Chem. Phys.  4(2004) 1461 - 1738
+O3+O=O2+O2	 			4.82E+12 	0.00 	4094.		
+!! O3+H=O2+OH is taken from
+!!DeMore, W.B.; Sander, S.P.; Golden, D.M.; Hampson, R.F.; Kurylo, M.J.; Howard, C.J.; Ravishankara, A.R.; Kolb, C.E.; Molina, M.J.
+!!Chemical kinetics and photochemical data for use in stratospheric modeling. Evaluation number 12
+!!JPL Publication 97-4  1997 1-266
+O3+H=O2+OH 				8.43E+13 	0.00 	934		
+!! O3+H=O+HO2 is taken from 
+!!C.J. Howard, B.J. Finlayson-Pitts J. Chem. Phys., 72 (6) (1980), pp. 3842–3843
+O3+H=O+HO2				4.52E+11 	0.00	0.		
+!! O3+OH=O2+HO2 is from
+!!A. Mansergas, J.M. Anglada  ChemPhysChem, 8 (2007), pp. 1534–1539
+O3+OH=O2+HO2			1.85E+11 	0.00	 831	
+!!O3+H2O=O2+H2O2 is from
+!! S. Hatakeyama, M.T. Leu J. Phys. Chem., 93 (1989), pp. 5784–5789
+O3+H2O=O2+H2O2			6.62E+01 	0.00	 0		
+!! O3+HO2=OH+O2+O2 is from
+!!DeMore, W.B.; Sander, S.P.; Golden, D.M.; Hampson, R.F.; Kurylo, M.J.; Howard, C.J.; Ravishankara, A.R.; Kolb, C.E.; Molina, M.J.
+!!Chemical kinetics and photochemical data for use in stratospheric modeling. Evaluation number 12
+!!JPL Publication 97-4  1997 1-266
+O3+HO2=OH+O2+O2			6.62E+09 	0.00 	994		
+!! the following two are from
+!!R. Atkinson, D.L. Baulch, R.A. Cox, J.N. Crowley, R.F. Hampson, R.G. Hynes, M.E. Jenkin, M.J. Rossi, J. Troe
+!! Atmos. Chem. Phys., 4 (2004), pp. 1461–1738
+O3+NO=O2+NO2			8.43E+11 	0.00 	2603	
+
+
+END
