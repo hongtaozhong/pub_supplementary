@@ -1,7 +1,15 @@
 
 ! H2/O2/N2 chemistry is HP Mech from  http://engine.princeton.edu/mechanism/HP-Mech.html   
 ! N submech is added in this work
-!
+! Mech author: Xingqian Mao, Hongtao Zhong
+! Princeton University
+!****************************************************************************************!
+!																						 !
+!              This is for publication entitled "Dynamics and                            !
+!				Chemical Mode Analysis of Plasma Thermal-Chemical Instability"           !
+!																						 !
+!****************************************************************************************!
+
 !****************************************************************************************!
 !																						 !
 !                                  CHEMISTRY INPUT FILE                                  !

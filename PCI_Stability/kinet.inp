@@ -1,5 +1,13 @@
 # Plasma kinetics calculated in ZDPlasKin.
 # This case corresponds to a H2/O2/N2 plasma consisting of electrons, atoms, vibrationally excited species, electronically excited species, ions and neutrals.
+# Mech author: Xingqian Mao, Hongtao Zhong
+# Princeton University
+#****************************************************************************************!
+#																						 !
+#              This is for publication entitled "Dynamics and                            !
+#				Chemical Mode Analysis of Plasma Thermal-Chemical Instability"           !
+#																						 !
+#****************************************************************************************!
 
 ELEMENTS
 H O N E

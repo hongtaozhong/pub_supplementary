@@ -2,6 +2,14 @@
 # N2-O2 TEST CASE
 # INPUT DATA FILE
 # ZDPLASKIN
+# Mech author: Xingqian Mao, Hongtao Zhong
+# Princeton University
+#****************************************************************************************!
+#																						 !
+#              This is for publication entitled "Dynamics and                            !
+#				Chemical Mode Analysis of Plasma Thermal-Chemical Instability"           !
+#																						 !
+#****************************************************************************************!
 #
 # This test case corresponds to an N2-O2 plasma consisting of electrons, molecular
 # ions, and neutrals. 
