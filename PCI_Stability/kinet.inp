@@ -945,7 +945,6 @@ N2(A) + H2 => N2 + H + H           !  2.0d-10*exp(-3500.0d0/Tgas)
 N2(A) + NH3 => N2 + H + NH2        !  8.5d-11
 N2(A) + O => NO + N(2D)            !  7.0d-12
 N2(A) + O => N2 + O(1S)            !  2.1d-11    
-N2(A) + O2 => N2 + O + O(1D)       !  2.1d-12*(Tgas/300.0d0)**0.55
 N2(A) + O2 => N2 + O2(a1)          !  2.0d-13*(Tgas/300.0d0)**0.55
 N2(A) + O2 => N2 + O2(b1)          !  2.0d-13*(Tgas/300.0d0)**0.55     
 N2(A) + O2 => N2O + O              !  2.0d-14*(Tgas/300.0d0)**0.55
@@ -954,6 +953,10 @@ N2(A) + N2O => N2 + N + NO         !  1.0d-11
 N2(A) + NO2 => N2 + O + NO         !  1.0d-12
 N2(A) + H2O => N2 + H + OH         !  5.0d-14
 N2(A) + OH => N2 + O + H           !  1.0d-10
+
+# Guerra Vasco et al Plasma Sources Science and Technology 2019
+N2(A) + O2 => N2 + O + O           !  1.63d-12*(Tgas/300.0d0)**0.55
+
 
 # Reactions of N2(B)
 # M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, New York.
