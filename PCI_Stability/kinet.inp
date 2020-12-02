@@ -987,6 +987,10 @@ N2(C) + O2 => N2 + O + O(1S)       !  3.0d-10
 # N.A. Popov, Plasma Sources Sci. Technol. 25 (2016) 044003 (17pp).
 N2(C) + O => NO + N(2D)            !  3.0d-10
 
+# Kobayashi, Sumire, et al. Plasma Sources Science and Technology 26.7 (2017): 075004.
+N2(C) + O2 => O + O(1D) + N2       !  3.0d-10
+N2(C) + H2 => H + H + N2           !  3.0d-10
+
 #-----------------------------------------------------------------------
 #
 # formation of excited states of N2
