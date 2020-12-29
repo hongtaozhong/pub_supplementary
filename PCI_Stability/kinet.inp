@@ -19,7 +19,7 @@ SPECIES
 H       H2       O       O2       OH
 H2O     HO2      H2O2    N2
 
-# N2 species
+# N species
 N  NH  NH2 NH3 NNH N2H2 N2H3 N2H4 
 NO NO2 N2O NO3 HNO HONO HNO2  
 
@@ -102,8 +102,8 @@ E + O2^+ + O2 => O2 + O2              ! 6.0d-27*(300.0d0/Te)**1.5
 E + O4^+ + E => O2 + O2 + E           ! 7.18d-27/(Te/1.16d4)**4.5
 
 # D. Liu, et al., Plasma Sources Sci. Technol. 19 (2010) 025018 (22pp).
-E + H3O^+ => H2O + H                  ! 5.63d-8/Te**0.5
-E + H3O^+ => 2H + OH                  ! 1.05d-8/Te**0.5
+E + H3O^+ => H2O + H                  ! 5.63d-8/(Te/1.16d4)**0.5
+E + H3O^+ => 2H + OH                  ! 1.05d-8/(Te/1.16d4)**0.5
 
 #-----------------------------------------------------------------------
 #
