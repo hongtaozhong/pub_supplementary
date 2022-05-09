@@ -1,0 +1,1040 @@
+# Plasma kinetics calculated in ZDPlasKin.
+# This case corresponds to a DME/O2/N2 plasma consisting of electrons, atoms, vibrationally excited species, electronically excited species, ions and neutrals.
+# Mech author: Xingqian Mao, Hongtao Zhong
+# Princeton University
+#****************************************************************************************!
+#																						 !
+#              This is for publication entitled "Dynamics and                            !
+#				Chemical Mode Analysis of Plasma Thermal-Chemical Instability"           !
+#																						 !
+#****************************************************************************************!
+
+ELEMENTS
+C H O N E
+END
+
+SPECIES
+
+H H2 CH2 CH2(S) CH3
+O CH4 OH H2O C2H2
+C2H3 CO N2 C2H4 HCO
+C2H5 CH2O C2H6 CH2OH CH3O
+O2 CH3OH HO2 H2O2 HCCO
+CH2CO CH2HCO CH3CO CO2 CH3HCO
+CH3CHOH C2H4OH CH3CH2O CH3OCH2 HOCHO
+CH3OCH3 C2H5OH HOCH2O CH3OCO CH3OCHO
+CH3OCH2O CH3OCH2OH OCH2OCHO HOCH2OCO HOC2H4O2
+CH3OCH2O2 CH2OCH2O2H CH3OCH2O2H HO2CH2OCHO O2CH2OCH2O2H
+CH3O2 CH3O2H CH2CHOH
+
+! N species
+N NH NH2 NH3 NNH N2H2 N2H3 N2H4 CN HCN H2CN HCNN NCN
+NO NO2 N2O NO3 NCO HNO HONO HNO2
+
+
+HCNO C2H CH CH2CHO HNCO HOCN
+
+! Plasma species (Excited)
+N2(v1)  N2(v2)  N2(v3)  N2(v4)  N2(v5)  N2(v6)  N2(v7)  N2(v8)
+O2(v1)  O2(v2)  O2(v3)  O2(v4)  
+
+N2(A)   N2(B)   N2(a')  N2(C)   N(2D)
+O2(a1)  O2(b1)  O2*  O(1D)  O(1S) O3 
+
+! Plasma species (Ions)
+N2^+    N4^+
+O2^+    O4^+      
+O^-     O2^-     O4^-  
+CH3OCH3^+     
+E
+
+END
+
+BOLSIG
+N2 O2 CH3OCH3
+END
+
+
+REACTIONS
+
+#-----------------------------------------------------------------------
+#
+# Electron impact ionization and attachment reactions
+#
+#-----------------------------------------------------------------------
+
+# Ionization
+e + N2 => e + e + N2^+         !   BOLSIG+ N2 -> N2+(X)
+e + O2 => e + e + O2^+         !   BOLSIG+ O2->O2+   
+
+# Attachment
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+e + O2 + N2 => O2^- + N2               ! 1.07d-31*(300.0d0/Te)**2*exp(-70.0d0/Tgas)*exp(1500.0d0*(Te-Tgas)/(Te*Tgas))
+e + O2 + O2 => O2^- + O2               ! 1.40d-29*(300.0d0/Te)*exp(-600.0d0/Tgas)*exp(700.0d0*(Te-Tgas)/(Te*Tgas))
+
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+E + O + O2 => O^- + O2                 ! 1.0d-31
+E + O + O2 => O2^- + O                 ! 1.0d-31
+E + O2 + H2O => O2^- + H2O             ! 1.40d-29
+# A. Starikovskiy and N. Aleksandrov, Mechanism of Plasma-Assisted Ignition for H2 and C1-C5 Hydrocarbons, 55th AIAA Aerospace Sciences Meeting, 2017.
+E + O + O => O^- + O                   ! 8.33d-31
+E + O2 + H2 => O2^- + H2               ! 4.8d-31
+
+# D. Liu, et al., Plasma Sources Sci. Technol. 19 (2010) 025018 (22pp).
+E + O => O^-                           ! 1.0d-15
+
+#-----------------------------------------------------------------------
+#
+# Electron-ion recombination
+#
+#-----------------------------------------------------------------------
+
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+E + N2^+ => N  + @B                   ! 1.8d-7*(300.0d0/Te)**0.39*@R
+    @B = N       N(2D)
+    @R = 0.50d0  0.50d0
+E + N4^+ => N2 + N2                   ! 2.3d-6*(300.0d0/Te)**0.53
+
+E + O2^+ => O  + @B                   ! 2.7d-7*(300.0d0/Te)**0.7*@R
+    @B = O       O(1D)   O(1S)
+    @R = 0.55d0  0.40d0  0.05d0
+E + O4^+ => O2 + O2                   ! 1.4d-6*(300.0d0/Te)**0.5
+
+# I.A. Kossyi, et al., Plasma Sources Sci. Technol. 1 (1992) 207-220.
+E + O2^+ + E => O2 + E                ! 1.0d-19*(300.0d0/Te)**4.5
+E + O2^+ + O2 => O2 + O2              ! 6.0d-27*(300.0d0/Te)**1.5
+
+# D. Liu, et al., Plasma Process. Polym. 7 (2010) 846-865.
+E + O4^+ + E => O2 + O2 + E           ! 7.18d-27/(Te/1.16d4)**4.5
+
+#-----------------------------------------------------------------------
+#
+# Positive ion reactions
+#
+#-----------------------------------------------------------------------
+
+# Reactions of N2^+
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, New York.
+N2^+ + O2 => O2^+ + N2                      !  6.0d-11*(300.d0/Tgas)**0.5d0
+N2^+ + N2 + N2 => N4^+ + N2                 !  5.2d-29*(300.0d0/Tgas)**2.2
+
+# Reactions of N4^+
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000
+N4^+ + N2 => N2^+ + N2 + N2       !  2.1d-16*exp(Tgas/121.0d0)
+N4^+ + O2 => O2^+ + N2 + N2       !  2.5d-10
+
+
+# Reactions of O2^+
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+O2^+ + O2 + O2 => O4^+ + O2              ! 2.4d-30*(300.0d0/Tgas)**3.2
+
+# Reactions of O4^+
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+O4^+ + O => O2^+ + O3                    ! 3.0d-10
+O4^+ + O2 => O2^+ + O2 + O2              ! 3.3d-6*(300.0d0/Tgas)**4*exp(-5030.0d0/Tgas)
+# D. Liu, et al., Plasma Process. Polym. 7 (2010) 846-865.
+O4^+ + O(1D) => O2^+ + O3                ! 3.0d-10
+O4^+ + O(1S) => O2^+ + O3                ! 3.0d-10
+
+#-----------------------------------------------------------------------
+#
+# Negative ion reactions
+#
+#-----------------------------------------------------------------------
+
+# Reactions of O^- 
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+O^- + O => O2 + E                       ! 1.4d-10
+O^- + O2 => O3  + E                     ! 5.0d-15
+O^- + O2(a1) => O3 + E                  ! 3.0d-10
+O^- + O2(a1) => O2^- + O                ! 1.0d-10
+O^- + O2(b1) => O + O2 + E              ! 6.9d-10
+O^- + O3 => O2 + O2 + E                 ! 3.0d-10
+# UMIST RATE12, astrochemistry.net.
+O^- + H2 => H2O + E                     ! 7.00d-10
+O^- + H => OH + E                       ! 5.00d-10
+O^- + O2 => O + O2^-                    ! 7.3d-10*exp(-890.0d0/Tgas)
+#O^- + H2 => OH^- + H                    ! 3.00d-11
+# D. Liu, et al., Plasma Process. Polym. 7 (2010) 846-865.
+O^- + O3 => O2^- + O2                   ! 1.02d-11*(Tgas/300.0d0)**0.5
+O^- + O(1D) => O2 + E                   ! 1.0d-10
+O^- + O(1S) => O2 + E                   ! 1.0d-10
+# D. Liu, et al., Plasma Sources Sci. Technol. 19 (2010) 025018 (22pp).
+#O^- + H2O => OH^- + OH      	        ! 1.40d-9
+O^- + H2O => H2O2 + E                   ! 6.0d-13
+# A. Starikovskiy and N. Aleksandrov, Mechanism of Plasma-Assisted Ignition for H2 and C1-C5 Hydrocarbons, 55th AIAA Aerospace Sciences Meeting, 2017.
+O^- + OH => HO2 + E                     ! 1.0d-9
+O^- + HO2 => OH + O2 + E                ! 1.0d-9
+O^- + H2O2 => H2O + O2 + E              ! 1.0d-9
+
+# Reactions of O2^-
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+O2^- + O => O3 + E                      ! 1.5d-10
+O2^- + O2 => E + O2 + O2                ! 2.7d-10*(Tgas/300.0d0)**0.5*exp(-5590.0d0/Tgas)
+O2^- + O2(a1) => O2 + O2 + E            ! 2.0d-10
+O2^- + O2(b1) => O2 + O2 + E            ! 3.6d-10
+O2^- + O => O^- + O2                    ! 3.3d-10
+O2^- + N2 => O2 + N2 + e               ! 1.9d-12*(Tgas/300)**0.5*exp(-4990.0d0/Tgas)
+# I.A. Kossyi, et al, Plasma Sources Sci. Technol. 1 (1992) 207-220.
+O2^- + O2 + O2 => O4^- + O2             ! 3.5d-31*(300.0d0/Tgas)
+# D. Liu, et al., Plasma Process. Polym. 7 (2010) 846-865.
+O2^- + O(1D) => O + O2 + E              ! 1.0d-10
+O2^- + O(1S) => O + O2 + E              ! 1.0d-10
+O2^- + O(1S) => O^- + 2O                ! 1.0d-10
+# D. Liu, et al., Plasma Sources Sci. Technol. 19 (2010) 025018 (22pp).
+O2^- + H => HO2 + E                     ! 1.50d-9
+O2^- + H2O => O2 + H2O + E              ! 5.0d-9*exp(-5000.0d0/Tgas)
+#O2^- + OH => OH^- + O2                  ! 1.00d-10
+# J. Prager, et al., Proc. Combust. Inst. 31 (2007) 1129-1137.
+#O2^- + H => OH^- + O                    ! 1.79d-9
+# A. Starikovskiy and N. Aleksandrov, Mechanism of Plasma-Assisted Ignition for H2 and C1-C5 Hydrocarbons, 55th AIAA Aerospace Sciences Meeting, 2017.
+#O2^- + H2 => OH + OH^-                  ! 4.0d-11
+
+# Reactions of O4^-
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+O4^- + O => O^- + O2 + O2               ! 3.0d-10
+O4^- + O2(a1) => O2^- + O2 + O2         ! 1.0d-10
+O4^- + O2(b1) => O2^- + O2 + O2         ! 1.0d-10
+# D. Liu, et al., Plasma Process. Polym. 7 (2010) 846-865.
+O4^- + O(1D) => O + 2O2 + E             ! 1.0d-10
+O4^- + O(1S) => O + 2O2 + E             ! 1.0d-10
+O4^- + O2(b1) => 3O2 + E                ! 1.0d-10
+O4^- + ANY_NEUTRAL => O2^- + O2 + ANY_NEUTRAL   !  1.0d-10*exp(-1044.0d0/Tgas)
+O4^- + O(1D) => O2^- + O2 + O           ! 1.0d-10
+O4^- + O(1S) => O^- + 2O2               ! 1.0d-10
+
+#-----------------------------------------------------------------------
+#
+# Ion-ion Recombination 
+#
+#----------------------------------------------------------------------
+
+# Reactions of O^-
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+O^- + O2^+ => O + O2                     ! 2.0d-7*(300.0d0/Tgas)**0.5
+O^- + N2^+ => O + N2                     ! 2.0d-7*(300.0d0/Tgas)**0.5
+O^- + @A => O + @B                     ! 1.0d-7
+    @A = N2^+  N4^+  O2^+  O4^+  
+    @B = N+N   N2+N2 O+O   O2+O2 
+O^- + @A + ANY_NEUTRAL => O + @B + ANY_NEUTRAL    ! 2.0d-25*(300.0d0/Tgas)**2.5
+    @A = N2^+  O2^+   O4^+ 
+    @B = N2    O2     O2+O2
+O^- + N2^+ + ANY_NEUTRAL => N2O + ANY_NEUTRAL       ! 2.0d-25*(300.0d0/Tgas)**2.5  
+O^- + O2^+ + ANY_NEUTRAL => O3 + ANY_NEUTRAL        ! 2.0d-25*(300.0d0/Tgas)**2.5      
+
+# Reactions of O2^-
+
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+O2^- + N2^+ => O2 + N2                	! 2.0d-7*(300/Tgas)**0.5*(1+ (300/Tgas)**2)
+O2^- + O2^+ => O2 + O2                	! 2.0d-7*(300/Tgas)**0.5*(1+ (300/Tgas)**2)
+O2^- + @A => O2 + @B                   ! 1.0d-7
+    @A = N2^+  N4^+  O2^+  O4^+ 
+    @B = N+N   N2+N2 O+O   O2+O2 
+O2^- + @A  + ANY_NEUTRAL => O2 + @B + ANY_NEUTRAL ! 2.0d-25*(300.0d0/Tgas)**2.5
+    @A = N2^+  O2^+   O4^+ 
+    @B = N2    O2     O2+O2
+# D. Liu, et al., Plasma Sources Sci. Technol. 19 (2010) 025018 (22pp).
+#O2^- + H2^+ => O2 + H2                 ! 2.0d-7*(300.0d0/Tgas)**0.5
+#O2^- + H3^+ => OH + H2O                ! 2.0d-7*(300.0d0/Tgas)**0.5 
+
+# Reactions of O4^-
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+O4^- + @A => 2O2 + @B                   ! 1.0d-7
+    @A = N2^+  N4^+   O2^+   O4^+   
+    @B = N2    N2+N2  O2     O2+O2 
+# D. Liu, et al., Plasma Process. Polym. 7 (2010) 846-865.
+O4^- + @A + ANY_NEUTRAL => 2O2 + @B + ANY_NEUTRAL  ! 2.0d-25*(300.0d0/Tgas)**2.5
+    @A = O2^+   O4^+
+    @B = O2     O2+O2
+
+#-----------------------------------------------------------------------
+#
+# Electron impact vibrational excitation
+#
+#-----------------------------------------------------------------------
+
+# Phelps database, www.lxcat.net.
+E + N2 => E + N2(v1)                   ! BOLSIG N2 -> N2(v1)
+E + N2 => E + N2(v2)                   ! BOLSIG N2 -> N2(v2)
+E + N2 => E + N2(v3)                   ! BOLSIG N2 -> N2(v3)
+E + N2 => E + N2(v4)                   ! BOLSIG N2 -> N2(v4)
+E + N2 => E + N2(v5)                   ! BOLSIG N2 -> N2(v5)
+E + N2 => E + N2(v6)                   ! BOLSIG N2 -> N2(v6)
+E + N2 => E + N2(v7)                   ! BOLSIG N2 -> N2(v7)
+E + N2 => E + N2(v8)                   ! BOLSIG N2 -> N2(v8)
+
+# Biagi database, www.lxcat.net.
+E + O2 => E + O2(v1)                   ! BOLSIG O2 -> O2(v1)     
+E + O2 => E + O2(v2)                   ! BOLSIG O2 -> O2(v2)
+E + O2 => E + O2(v3)                   ! BOLSIG O2 -> O2(v3)
+E + O2 => E + O2(v4)                   ! BOLSIG O2 -> O2(v4)
+
+# It is assumed that N2(v) and O2(v) are primarily consumed by VT relaxation (according to CH4 results)
+# X. Mao and Q. Chen, AIAA JOURNAL, 56 (11) (2018) 4312-4320
+
+# VT-N2 Rate constant Definition
+$ double precision :: kVT10_N2DME, kVT10_N2N2, kVT10_N2O2, kVT10_N2CO2, kVT10_N2H2O, kVT10_N2H2, kVT10_N2OH ! cm3.s-1 
+$ double precision :: kVT10_N2H, kVT10_N2O, kVT10_N2N, kVT10_N2CH4, kVT10_N2C2H2, kVT10_N2C2H4, kVT10_N2C2H6 ! cm3.s-1
+$ double precision :: kVT10_O2DME, kVT10_O2N2, kVT10_O2O2, kVT10_O2CO2, kVT10_O2H2O, kVT10_O2H2 ! cm3.s-1
+$ double precision :: kVT10_O2CH4, kVT10_O2C2H2, kVT10_O2C2H4, kVT10_O2C2H6, kVT10_O2OH, kVT10_O2H, kVT10_O2O ! cm3.s-1
+$ double precision :: kVV10_O2O2, kVV10_N2N2 ! cm3.s-1
+$ double precision :: M ! cm-3
+$ double precision :: ktot, k0, kR1, kR2, kR3 ! cm3.s-1
+
+# Rate constant is calculated at 100 Torr.
+$ M = 100/760*101325.0d0/1.38064852d-17/Tgas
+$ ktot = 3.0d-11*Tgas**0.17*exp(-2726.0d0/Tgas)
+$ k0 = 2.2d-37*Tgas**2.34*exp(-1350.0d0/Tgas)
+$ kR1 = 6.8d-16*Tgas**1.51*exp(-3040.0d0/Tgas)
+$ kR2 = ktot*(k0*M/(ktot+k0*M))
+$ kR3 = ktot-kR1-kR2
+
+# VT-O2/N2 Rate constant Definition
+$ kVT10_N2DME = 3.2d-14*Tgas*exp(-41.45d0/Tgas**(1.0d0/3.0d0))
+$ kVT10_N2N2 = Tgas*exp(-22.86d0-328.9d0/Tgas**(1.0d0/3.0d0)+993.3d0/Tgas**(2.0d0/3.0d0))
+$ kVT10_N2O2 = Tgas*exp(-22.86d0-328.9d0/Tgas**(1.0d0/3.0d0)+993.3d0/Tgas**(2.0d0/3.0d0))
+$ kVT10_N2CO2 = exp(-19.414d0-134.73d0/Tgas**(1.0d0/3.0d0)+253.2d0/Tgas**(2.0d0/3.0d0)+251.7d0/Tgas) 
+$ kVT10_N2H2O = Tgas*exp(-35.12d0-21.18d0/Tgas**(1.0d0/3.0d0))
+$ kVT10_N2H2 = Tgas*exp(-24.89d0-167.24d0/Tgas**(1.0d0/3.0d0)+394.43d0/Tgas**(2.0d0/3.0d0))
+$ kVT10_N2OH = Tgas*exp(-24.89d0-167.24d0/Tgas**(1.0d0/3.0d0)+394.43d0/Tgas**(2.0d0/3.0d0))
+$ kVT10_N2H = 3.1d0*Tgas*exp(-24.89d0-167.24d0/Tgas**(1.0d0/3.0d0)+394.43d0/Tgas**(2.0d0/3.0d0))
+$ kVT10_N2O = Tgas*exp(-34.03d0-33.11d0/Tgas**(1.0d0/3.0d0))
+$ kVT10_N2N = 4.0d-16*(Tgas/300.0d0)**0.5
+$ kVT10_N2CH4 = 3.2d-14*Tgas*exp(-41.45d0/Tgas**(1.0d0/3.0d0))
+$ kVT10_N2C2H2 = 1.2d-15*Tgas*exp(-17.27d0/Tgas**(1.0d0/3.0d0))
+$ kVT10_N2C2H4 = 6.0d-16*Tgas
+$ kVT10_N2C2H6 = 6.0d-16*Tgas
+
+$ kVT10_O2DME = Tgas*exp(-30.39d0-41.45d0/Tgas**(1.0d0/3.0d0))
+$ kVT10_O2N2 = exp(-28.02d0-132.0d0/Tgas**(1.0d0/3.0d0))
+$ kVT10_O2O2 = exp(-18.32d0-157.0d0/Tgas**(1.0d0/3.0d0)) 
+$ kVT10_O2CO2 = Tgas*exp(-27.34d0-146.5d0/Tgas**(1.0d0/3.0d0)) 
+$ kVT10_O2H2O = 100*exp(-18.32d0-157.0d0/Tgas**(1.0d0/3.0d0)) 
+$ kVT10_O2H2 = exp(-22.04d0-91.5d0/Tgas**(1.0d0/3.0d0))
+$ kVT10_O2CH4 = Tgas*exp(-30.39d0-41.45d0/Tgas**(1.0d0/3.0d0))
+$ kVT10_O2C2H2 = Tgas*exp(-33.61d0-17.27d0/Tgas**(1.0d0/3.0d0))
+$ kVT10_O2C2H4 = 1.05d-15*Tgas
+$ kVT10_O2C2H6 = 1.05d-15*Tgas
+$ kVT10_O2OH = 100*exp(-18.32d0-157.0d0/Tgas**(1.0d0/3.0d0)) 
+$ kVT10_O2H = 1.7*exp(-22.04d0-91.5d0/Tgas**(1.0d0/3.0d0))
+$ kVT10_O2O = Tgas*exp(-28.87d0-111.0d0/Tgas**(1.0d0/3.0d0)) 
+
+
+# VV-O2/N2 Rate constant Definition
+$ kVV10_N2N2 = 0.9d-14*(Tgas/300.0d0)**1.5
+$ kVV10_O2O2 = 0.9d-14*(Tgas/300.0d0)**1.5
+
+#-----------------------------------------------------------------------
+#
+# relaxation of N2(v)
+#
+#-----------------------------------------------------------------------
+
+# SSH theory and approximations for the Morse oscillator model
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000
+# A. Starikovskiy and N. Aleksandrov, Prog. Energy Combust. Sci. 39 (1) (2013) 61-110
+# A. Starikovskiy and N. Aleksandrov, Mechanism of Plasma-Assisted Ignition for H2 and C1-C5 Hydrocarbons, 55th AIAA Aerospace Sciences Meeting, 2017
+
+# Estimated from CH4
+# <2015 K
+N2(v1) + CH3OCH3 => N2 + CH3OCH3          !  kVT10_N2DME
+N2(v2) + CH3OCH3 => N2(v1) + CH3OCH3      !  kVT10_N2DME*2.012*exp(2.288d0/Tgas**(1.0d0/3.0d0))
+N2(v3) + CH3OCH3 => N2(v2) + CH3OCH3      !  kVT10_N2DME*3.037*exp(4.551d0/Tgas**(1.0d0/3.0d0))
+N2(v4) + CH3OCH3 => N2(v3) + CH3OCH3      !  kVT10_N2DME*4.075*exp(6.826d0/Tgas**(1.0d0/3.0d0))
+N2(v5) + CH3OCH3 => N2(v4) + CH3OCH3      !  kVT10_N2DME*5.125*exp(9.101d0/Tgas**(1.0d0/3.0d0))
+N2(v6) + CH3OCH3 => N2(v5) + CH3OCH3      !  kVT10_N2DME*6.189*exp(11.377d0/Tgas**(1.0d0/3.0d0))
+N2(v7) + CH3OCH3 => N2(v6) + CH3OCH3      !  kVT10_N2DME*7.266*exp(13.652d0/Tgas**(1.0d0/3.0d0))
+N2(v8) + CH3OCH3 => N2(v7) + CH3OCH3      !  kVT10_N2DME*8.357*exp(15.927d0/Tgas**(1.0d0/3.0d0))
+
+# <1620 K
+N2(v1) + N2 => N2 + N2                    !  kVT10_N2N2
+N2(v2) + N2 => N2(v1) + N2                !  kVT10_N2N2*2.012*exp(2.128d0/Tgas**(1.0d0/3.0d0))
+N2(v3) + N2 => N2(v2) + N2                !  kVT10_N2N2*3.037*exp(4.256d0/Tgas**(1.0d0/3.0d0))
+N2(v4) + N2 => N2(v3) + N2                !  kVT10_N2N2*4.075*exp(6.384d0/Tgas**(1.0d0/3.0d0))
+N2(v5) + N2 => N2(v4) + N2                !  kVT10_N2N2*5.125*exp(8.512d0/Tgas**(1.0d0/3.0d0))
+N2(v6) + N2 => N2(v5) + N2                !  kVT10_N2N2*6.189*exp(10.64d0/Tgas**(1.0d0/3.0d0))
+N2(v7) + N2 => N2(v6) + N2                !  kVT10_N2N2*7.266*exp(12.769d0/Tgas**(1.0d0/3.0d0))
+N2(v8) + N2 => N2(v7) + N2                !  kVT10_N2N2*8.357*exp(14.897d0/Tgas**(1.0d0/3.0d0))
+
+# <1730 K
+N2(v1) + O2 => N2 + O2                    !  kVT10_N2O2
+N2(v2) + O2 => N2(v1) + O2                !  kVT10_N2O2*2.012*exp(2.174d0/Tgas**(1.0d0/3.0d0))
+N2(v3) + O2 => N2(v2) + O2                !  kVT10_N2O2*3.037*exp(4.349d0/Tgas**(1.0d0/3.0d0))
+N2(v4) + O2 => N2(v3) + O2                !  kVT10_N2O2*4.075*exp(6.523d0/Tgas**(1.0d0/3.0d0))
+N2(v5) + O2 => N2(v4) + O2                !  kVT10_N2O2*5.125*exp(8.697d0/Tgas**(1.0d0/3.0d0))
+N2(v6) + O2 => N2(v5) + O2                !  kVT10_N2O2*6.189*exp(10.872d0/Tgas**(1.0d0/3.0d0))
+N2(v7) + O2 => N2(v6) + O2                !  kVT10_N2O2*7.266*exp(13.046d0/Tgas**(1.0d0/3.0d0))
+N2(v8) + O2 => N2(v7) + O2                !  kVT10_N2O2*8.357*exp(15.221d0/Tgas**(1.0d0/3.0d0))
+
+# <1980 K
+N2(v1) + CO2 => N2 + CO2                  !  kVT10_N2CO2
+N2(v2) + CO2 => N2(v1) + CO2              !  kVT10_N2CO2*2.012*exp(2.275d0/Tgas**(1.0d0/3.0d0))
+N2(v3) + CO2 => N2(v2) + CO2              !  kVT10_N2CO2*3.037*exp(4.551d0/Tgas**(1.0d0/3.0d0))
+N2(v4) + CO2 => N2(v3) + CO2              !  kVT10_N2CO2*4.075*exp(6.826d0/Tgas**(1.0d0/3.0d0))
+N2(v5) + CO2 => N2(v4) + CO2              !  kVT10_N2CO2*5.125*exp(9.101d0/Tgas**(1.0d0/3.0d0))
+N2(v6) + CO2 => N2(v5) + CO2              !  kVT10_N2CO2*6.189*exp(11.377d0/Tgas**(1.0d0/3.0d0))
+N2(v7) + CO2 => N2(v6) + CO2              !  kVT10_N2CO2*7.266*exp(13.652d0/Tgas**(1.0d0/3.0d0))
+N2(v8) + CO2 => N2(v7) + CO2              !  kVT10_N2CO2*8.357*exp(15.927d0/Tgas**(1.0d0/3.0d0))
+
+# <1270 K
+N2(v1) + H2O => N2 + H2O                  !  kVT10_N2H2O
+N2(v2) + H2O => N2(v1) + H2O              !  kVT10_N2H2O*2.012*exp(1.961d0/Tgas**(1.0d0/3.0d0))
+N2(v3) + H2O => N2(v2) + H2O              !  kVT10_N2H2O*3.037*exp(3.922d0/Tgas**(1.0d0/3.0d0))
+N2(v4) + H2O => N2(v3) + H2O              !  kVT10_N2H2O*4.075*exp(5.883d0/Tgas**(1.0d0/3.0d0))
+N2(v5) + H2O => N2(v4) + H2O              !  kVT10_N2H2O*5.125*exp(7.844d0/Tgas**(1.0d0/3.0d0))
+N2(v6) + H2O => N2(v5) + H2O              !  kVT10_N2H2O*6.189*exp(9.806d0/Tgas**(1.0d0/3.0d0))
+N2(v7) + H2O => N2(v6) + H2O              !  kVT10_N2H2O*7.266*exp(11.767d0/Tgas**(1.0d0/3.0d0))
+N2(v8) + H2O => N2(v7) + H2O              !  kVT10_N2H2O*8.357*exp(13.728d0/Tgas**(1.0d0/3.0d0))
+
+# >300 K 
+N2(v1) + H2 => N2 + H2                    !  kVT10_N2H2
+N2(v2) + H2 => N2(v1) + H2                !  kVT10_N2H2*2.012*exp(1.767d0*(1.867d0/Tgas)**0.5)
+N2(v3) + H2 => N2(v2) + H2                !  kVT10_N2H2*3.037*exp(3.534d0*(1.867d0/Tgas)**0.5)
+N2(v4) + H2 => N2(v3) + H2                !  kVT10_N2H2*4.075*exp(5.301d0*(1.867d0/Tgas)**0.5)
+N2(v5) + H2 => N2(v4) + H2                !  kVT10_N2H2*5.125*exp(7.068d0*(1.867d0/Tgas)**0.5)
+N2(v6) + H2 => N2(v5) + H2                !  kVT10_N2H2*6.189*exp(8.835d0*(1.867d0/Tgas)**0.5)
+N2(v7) + H2 => N2(v6) + H2                !  kVT10_N2H2*7.266*exp(10.602d0*(1.867d0/Tgas)**0.5)
+N2(v8) + H2 => N2(v7) + H2                !  kVT10_N2H2*8.357*exp(12.369d0*(1.867d0/Tgas)**0.5)
+
+# <1225 K
+N2(v1) + OH => N2 + OH                    !  kVT10_N2OH
+N2(v2) + OH => N2(v1) + OH                !  kVT10_N2OH*2.012*exp(1.938d0/Tgas**(1.0d0/3.0d0))
+N2(v3) + OH => N2(v2) + OH                !  kVT10_N2OH*3.037*exp(3.877d0/Tgas**(1.0d0/3.0d0))
+N2(v4) + OH => N2(v3) + OH                !  kVT10_N2OH*4.075*exp(5.815d0/Tgas**(1.0d0/3.0d0))
+N2(v5) + OH => N2(v4) + OH                !  kVT10_N2OH*5.125*exp(7.753d0/Tgas**(1.0d0/3.0d0))
+N2(v6) + OH => N2(v5) + OH                !  kVT10_N2OH*6.189*exp(9.691d0/Tgas**(1.0d0/3.0d0))
+N2(v7) + OH => N2(v6) + OH                !  kVT10_N2OH*7.266*exp(11.630d0/Tgas**(1.0d0/3.0d0))
+N2(v8) + OH => N2(v7) + OH                !  kVT10_N2OH*8.357*exp(13.568d0/Tgas**(1.0d0/3.0d0))
+
+# >300 K  
+N2(v1) + H => N2 + H                      !  kVT10_N2H
+N2(v2) + H => N2(v1) + H                  !  kVT10_N2H*2.012*exp(1.767d0*(0.966d0/Tgas)**0.5)
+N2(v3) + H => N2(v2) + H                  !  kVT10_N2H*3.037*exp(3.534d0*(0.966d0/Tgas)**0.5)
+N2(v4) + H => N2(v3) + H                  !  kVT10_N2H*4.075*exp(5.301d0*(0.966d0/Tgas)**0.5)
+N2(v5) + H => N2(v4) + H                  !  kVT10_N2H*5.125*exp(7.068d0*(0.966d0/Tgas)**0.5)
+N2(v6) + H => N2(v5) + H                  !  kVT10_N2H*6.189*exp(8.835d0*(0.966d0/Tgas)**0.5)
+N2(v7) + H => N2(v6) + H                  !  kVT10_N2H*7.266*exp(10.602d0*(0.966d0/Tgas)**0.5)
+N2(v8) + H => N2(v7) + H                  !  kVT10_N2H*8.357*exp(12.369d0*(0.966d0/Tgas)**0.5)
+
+# <1180 K
+N2(v1) + O => N2 + O                      !  kVT10_N2O
+N2(v2) + O => N2(v1) + O                  !  kVT10_N2O*2.012*exp(1.914d0/Tgas**(1.0d0/3.0d0))
+N2(v3) + O => N2(v2) + O                  !  kVT10_N2O*3.037*exp(3.828d0/Tgas**(1.0d0/3.0d0))
+N2(v4) + O => N2(v3) + O                  !  kVT10_N2O*4.075*exp(5.741d0/Tgas**(1.0d0/3.0d0))
+N2(v5) + O => N2(v4) + O                  !  kVT10_N2O*5.125*exp(7.655d0/Tgas**(1.0d0/3.0d0))
+N2(v6) + O => N2(v5) + O                  !  kVT10_N2O*6.189*exp(9.569d0/Tgas**(1.0d0/3.0d0))
+N2(v7) + O => N2(v6) + O                  !  kVT10_N2O*7.266*exp(11.483d0/Tgas**(1.0d0/3.0d0))
+N2(v8) + O => N2(v7) + O                  !  kVT10_N2O*8.357*exp(13.396d0/Tgas**(1.0d0/3.0d0))
+
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000
+# <1080 K
+N2(v1) + N => N2 + N                      !  kVT10_N2N
+N2(v2) + N => N2(v1) + N                  !  kVT10_N2N*2.012*exp(1.859d0/Tgas**(1.0d0/3.0d0))
+N2(v3) + N => N2(v2) + N                  !  kVT10_N2N*3.037*exp(3.718d0/Tgas**(1.0d0/3.0d0))
+N2(v4) + N => N2(v3) + N                  !  kVT10_N2N*4.075*exp(5.577d0/Tgas**(1.0d0/3.0d0))
+N2(v5) + N => N2(v4) + N                  !  kVT10_N2N*5.125*exp(7.436d0/Tgas**(1.0d0/3.0d0))
+N2(v6) + N => N2(v5) + N                  !  kVT10_N2N*6.189*exp(9.295d0/Tgas**(1.0d0/3.0d0))
+N2(v7) + N => N2(v6) + N                  !  kVT10_N2N*7.266*exp(11.154d0/Tgas**(1.0d0/3.0d0))
+N2(v8) + N => N2(v7) + N                  !  kVT10_N2N*8.357*exp(13.013d0/Tgas**(1.0d0/3.0d0))
+
+# <1180 K
+N2(v1) + CH4 => N2 + CH4                  !  kVT10_N2CH4
+N2(v2) + CH4 => N2(v1) + CH4              !  kVT10_N2CH4*2.012*exp(1.914d0/Tgas**(1.0d0/3.0d0))
+N2(v3) + CH4 => N2(v2) + CH4              !  kVT10_N2CH4*3.037*exp(3.828d0/Tgas**(1.0d0/3.0d0))
+N2(v4) + CH4 => N2(v3) + CH4              !  kVT10_N2CH4*4.075*exp(5.741d0/Tgas**(1.0d0/3.0d0))
+N2(v5) + CH4 => N2(v4) + CH4              !  kVT10_N2CH4*5.125*exp(7.655d0/Tgas**(1.0d0/3.0d0))
+N2(v6) + CH4 => N2(v5) + CH4              !  kVT10_N2CH4*6.189*exp(9.569d0/Tgas**(1.0d0/3.0d0))
+N2(v7) + CH4 => N2(v6) + CH4              !  kVT10_N2CH4*7.266*exp(11.483d0/Tgas**(1.0d0/3.0d0))
+N2(v8) + CH4 => N2(v7) + CH4              !  kVT10_N2CH4*8.357*exp(13.396d0/Tgas**(1.0d0/3.0d0))
+
+# <1560 K
+N2(v1) + C2H2 => N2 + C2H2                !  kVT10_N2C2H2
+N2(v2) + C2H2 => N2(v1) + C2H2            !  kVT10_N2C2H2*2.012*exp(2.101d0/Tgas**(1.0d0/3.0d0))
+N2(v3) + C2H2 => N2(v2) + C2H2            !  kVT10_N2C2H2*3.037*exp(4.203d0/Tgas**(1.0d0/3.0d0))
+N2(v4) + C2H2 => N2(v3) + C2H2            !  kVT10_N2C2H2*4.075*exp(6.304d0/Tgas**(1.0d0/3.0d0))
+N2(v5) + C2H2 => N2(v4) + C2H2            !  kVT10_N2C2H2*5.125*exp(8.406d0/Tgas**(1.0d0/3.0d0))
+N2(v6) + C2H2 => N2(v5) + C2H2            !  kVT10_N2C2H2*6.189*exp(10.507d0/Tgas**(1.0d0/3.0d0))
+N2(v7) + C2H2 => N2(v6) + C2H2            !  kVT10_N2C2H2*7.266*exp(12.609d0/Tgas**(1.0d0/3.0d0))
+N2(v8) + C2H2 => N2(v7) + C2H2            !  kVT10_N2C2H2*8.357*exp(14.710d0/Tgas**(1.0d0/3.0d0))
+
+# <1620 K
+N2(v1) + C2H4 => N2 + C2H4                !  kVT10_N2C2H4
+N2(v2) + C2H4 => N2(v1) + C2H4            !  kVT10_N2C2H4*2.012*exp(2.128d0/Tgas**(1.0d0/3.0d0))
+N2(v3) + C2H4 => N2(v2) + C2H4            !  kVT10_N2C2H4*3.037*exp(4.256d0/Tgas**(1.0d0/3.0d0))
+N2(v4) + C2H4 => N2(v3) + C2H4            !  kVT10_N2C2H4*4.075*exp(6.3584d0/Tgas**(1.0d0/3.0d0))
+N2(v5) + C2H4 => N2(v4) + C2H4            !  kVT10_N2C2H4*5.125*exp(8.512d0/Tgas**(1.0d0/3.0d0))
+N2(v6) + C2H4 => N2(v5) + C2H4            !  kVT10_N2C2H4*6.189*exp(10.64d0/Tgas**(1.0d0/3.0d0))
+N2(v7) + C2H4 => N2(v6) + C2H4            !  kVT10_N2C2H4*7.266*exp(12.769d0/Tgas**(1.0d0/3.0d0))
+N2(v8) + C2H4 => N2(v7) + C2H4            !  kVT10_N2C2H4*8.357*exp(14.897d0/Tgas**(1.0d0/3.0d0))
+
+# <1675 K
+N2(v1) + C2H6 => N2 + C2H6                !  kVT10_N2C2H6
+N2(v2) + C2H6 => N2(v1) + C2H6            !  kVT10_N2C2H6*2.012*exp(2.152d0/Tgas**(1.0d0/3.0d0))
+N2(v3) + C2H6 => N2(v2) + C2H6            !  kVT10_N2C2H6*3.037*exp(4.305d0/Tgas**(1.0d0/3.0d0))
+N2(v4) + C2H6 => N2(v3) + C2H6            !  kVT10_N2C2H6*4.075*exp(6.457d0/Tgas**(1.0d0/3.0d0))
+N2(v5) + C2H6 => N2(v4) + C2H6            !  kVT10_N2C2H6*5.125*exp(8.609d0/Tgas**(1.0d0/3.0d0))
+N2(v6) + C2H6 => N2(v5) + C2H6            !  kVT10_N2C2H6*6.189*exp(10.761d0/Tgas**(1.0d0/3.0d0))
+N2(v7) + C2H6 => N2(v6) + C2H6            !  kVT10_N2C2H6*7.266*exp(12.914d0/Tgas**(1.0d0/3.0d0))
+N2(v8) + C2H6 => N2(v7) + C2H6            !  kVT10_N2C2H6*8.357*exp(15.066d0/Tgas**(1.0d0/3.0d0))
+
+#-----------------------------------------------------------------------
+#
+# Relaxation of O2(v)
+#
+#-----------------------------------------------------------------------
+
+# SSH theory and approximations for the Morse oscillator model.
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+# A. Starikovskiy and N. Aleksandrov, Prog. Energy Combust. Sci. 39 (1) (2013) 61-110.
+# A. Starikovskiy and N. Aleksandrov, Mechanism of Plasma-Assisted Ignition for H2 and C1-C5 Hydrocarbons, 55th AIAA Aerospace Sciences Meeting, 2017
+#>535 K
+O2(v1) + CH3OCH3 => O2 + CH3OCH3         ! kVT10_O2DME
+O2(v2) + CH3OCH3 => O2(v1) + CH3OCH3     ! kVT10_O2DME*2.015*exp(1.45d0*(18.87d0/Tgas)**0.5) 
+O2(v3) + CH3OCH3 => O2(v2) + CH3OCH3     ! kVT10_O2DME*3.047*exp(2.90d0*(18.87d0/Tgas)**0.5) 
+O2(v4) + CH3OCH3 => O2(v3) + CH3OCH3     ! kVT10_O2DME*4.094*exp(4.35d0*(18.87d0/Tgas)**0.5)
+
+#>745 K
+O2(v1) + N2 => O2 + N2                   ! kVT10_O2N2 
+O2(v2) + N2 => O2(v1) + N2               ! kVT10_O2N2*2.015*exp(1.45d0*(14.933d0/Tgas)**0.5) 
+O2(v3) + N2 => O2(v2) + N2               ! kVT10_O2N2*3.047*exp(2.90d0*(14.933d0/Tgas)**0.5)  
+O2(v4) + N2 => O2(v3) + N2               ! kVT10_O2N2*4.094*exp(4.35d0*(14.933d0/Tgas)**0.5) 
+
+#>800 K
+O2(v1) + O2 => O2 + O2                   ! kVT10_O2O2 
+O2(v2) + O2 => O2(v1) + O2               ! kVT10_O2O2*2.015*exp(1.45d0*(16.0d0/Tgas)**0.5) 
+O2(v3) + O2 => O2(v2) + O2               ! kVT10_O2O2*3.047*exp(2.90d0*(16.0d0/Tgas)**0.5)  
+O2(v4) + O2 => O2(v3) + O2               ! kVT10_O2O2*4.094*exp(4.35d0*(16.0d0/Tgas)**0.5)  
+
+#>925 K
+O2(v1) + CO2 => O2 + CO2                 ! kVT10_O2CO2
+O2(v2) + CO2 => O2(v1) + CO2             ! kVT10_O2CO2*2.015*exp(1.45d0*(18.53d0/Tgas)**0.5) 
+O2(v3) + CO2 => O2(v2) + CO2             ! kVT10_O2CO2*3.047*exp(2.90d0*(18.53d0/Tgas)**0.5) 
+O2(v4) + CO2 => O2(v3) + CO2             ! kVT10_O2CO2*4.094*exp(4.35d0*(18.53d0/Tgas)**0.5) 
+
+#>575 K
+O2(v1) + H2O => O2 + H2O                 ! kVT10_O2H2O 
+O2(v2) + H2O => O2(v1) + H2O             ! kVT10_O2H2O*2.015*exp(1.45d0*(11.52d0/Tgas)**0.5) 
+O2(v3) + H2O => O2(v2) + H2O             ! kVT10_O2H2O*3.047*exp(2.90d0*(11.52d0/Tgas)**0.5)  
+O2(v4) + H2O => O2(v3) + H2O             ! kVT10_O2H2O*4.094*exp(4.35d0*(11.52d0/Tgas)**0.5) 
+
+#>300 K
+O2(v1) + H2 => O2 + H2                   ! kVT10_O2H2
+O2(v2) + H2 => O2(v1) + H2               ! kVT10_O2H2*2.015*exp(1.45d0*(1.882d0/Tgas)**0.5) 
+O2(v3) + H2 => O2(v2) + H2               ! kVT10_O2H2*3.047*exp(2.90d0*(1.882d0/Tgas)**0.5)
+O2(v4) + H2 => O2(v3) + H2               ! kVT10_O2H2*4.094*exp(4.35d0*(1.882d0/Tgas)**0.5)
+
+#>535 K
+O2(v1) + CH4 => O2 + CH4                 ! kVT10_O2CH4
+O2(v2) + CH4 => O2(v1) + CH4             ! kVT10_O2CH4*2.015*exp(1.45d0*(10.67d0/Tgas)**0.5) 
+O2(v3) + CH4 => O2(v2) + CH4             ! kVT10_O2CH4*3.047*exp(2.90d0*(10.67d0/Tgas)**0.5) 
+O2(v4) + CH4 => O2(v3) + CH4             ! kVT10_O2CH4*4.094*exp(4.35d0*(10.67d0/Tgas)**0.5) 
+
+#>715 K
+O2(v1) + C2H2 => O2 + C2H2               ! kVT10_O2C2H2
+O2(v2) + C2H2 => O2(v1) + C2H2           ! kVT10_O2C2H2*2.015*exp(1.45d0*(14.34d0/Tgas)**0.5) 
+O2(v3) + C2H2 => O2(v2) + C2H2           ! kVT10_O2C2H2*3.047*exp(2.90d0*(14.34d0/Tgas)**0.5) 
+O2(v4) + C2H2 => O2(v3) + C2H2           ! kVT10_O2C2H2*4.094*exp(4.35d0*(14.34d0/Tgas)**0.5) 
+
+#>745 K
+O2(v1) + C2H4 => O2 + C2H4               ! kVT10_O2C2H4
+O2(v2) + C2H4 => O2(v1) + C2H4           ! kVT10_O2C2H4*2.015*exp(1.45d0*(14.93d0/Tgas)**0.5) 
+O2(v3) + C2H4 => O2(v2) + C2H4           ! kVT10_O2C2H4*3.047*exp(2.90d0*(14.93d0/Tgas)**0.5) 
+O2(v4) + C2H4 => O2(v3) + C2H4           ! kVT10_O2C2H4*4.094*exp(4.35d0*(14.93d0/Tgas)**0.5) 
+
+#>775 K
+O2(v1) + C2H6 => O2 + C2H6               ! kVT10_O2C2H6
+O2(v2) + C2H6 => O2(v1) + C2H6           ! kVT10_O2C2H6*2.015*exp(1.45d0*(15.48d0/Tgas)**0.5) 
+O2(v3) + C2H6 => O2(v2) + C2H6           ! kVT10_O2C2H6*3.047*exp(2.90d0*(15.48d0/Tgas)**0.5) 
+O2(v4) + C2H6 => O2(v3) + C2H6           ! kVT10_O2C2H6*4.094*exp(4.35d0*(15.48d0/Tgas)**0.5) 
+
+#>555 K
+O2(v1) + OH => O2 + OH                   ! kVT10_O2OH
+O2(v2) + OH => O2(v1) + OH               ! kVT10_O2OH*2.015*exp(1.45d0*(11.102d0/Tgas)**0.5) 
+O2(v3) + OH => O2(v2) + OH               ! kVT10_O2OH*3.047*exp(2.90d0*(11.102d0/Tgas)**0.5)
+O2(v4) + OH => O2(v3) + OH               ! kVT10_O2OH*4.094*exp(4.35d0*(11.102d0/Tgas)**0.5)
+
+#>300 K
+O2(v1) + H => O2 + H                     ! kVT10_O2H
+O2(v2) + H => O2(v1) + H                 ! kVT10_O2H*2.015*exp(1.45d0*(9.697d-1/Tgas)**0.5) 
+O2(v3) + H => O2(v2) + H                 ! kVT10_O2H*3.047*exp(2.90d0*(9.697d-1/Tgas)**0.5)
+O2(v4) + H => O2(v3) + H                 ! kVT10_O2H*4.094*exp(4.35d0*(9.697d-1/Tgas)**0.5)
+
+#>535 K
+O2(v1) + O => O2 + O                     ! kVT10_O2O
+O2(v2) + O => O2(v1) + O                 ! kVT10_O2O*2.015*exp(1.45d0*(10.667d0/Tgas)**0.5) 
+O2(v3) + O => O2(v2) + O                 ! kVT10_O2O*3.047*exp(2.90d0*(10.667d0/Tgas)**0.5)
+O2(v4) + O => O2(v3) + O                 ! kVT10_O2O*4.094*exp(4.35d0*(10.667d0/Tgas)**0.5)
+
+#-----------------------------------------------------------------------
+#
+# Vibrational-Vibrational (V-V) interactions
+#
+#-----------------------------------------------------------------------
+
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+# V-V reactions of N2
+N2(v1) + N2(v1) => N2 + N2(v2)           ! kVV10_N2N2*2.012*exp(6.611d0/Tgas**0.5)*0.92
+N2(v1) + N2(v2) => N2 + N2(v3)           ! kVV10_N2N2*3.037*exp(13.223d0/Tgas**0.5)*0.88
+N2(v1) + N2(v3) => N2 + N2(v4)           ! kVV10_N2N2*4.075*exp(19.834d0/Tgas**0.5)*0.84
+N2(v1) + N2(v4) => N2 + N2(v5)           ! kVV10_N2N2*5.125*exp(26.445d0/Tgas**0.5)*0.8
+N2(v1) + N2(v5) => N2 + N2(v6)           ! kVV10_N2N2*6.189*exp(33.057d0/Tgas**0.5)*0.76
+N2(v1) + N2(v6) => N2 + N2(v7)           ! kVV10_N2N2*7.266*exp(39.668d0/Tgas**0.5)*0.72
+N2(v1) + N2(v7) => N2 + N2(v8)           ! kVV10_N2N2*8.357*exp(46.279d0/Tgas**0.5)*0.68
+
+N2(v2) + N2 => N2(v1) + N2(v1)           ! kVV10_N2N2*2.012*exp(6.611d0/Tgas**0.5)*0.92
+N2(v2) + N2(v2) => N2(v1) + N2(v3)       ! kVV10_N2N2*6.112*exp(6.611d0/Tgas**0.5)*0.88
+N2(v2) + N2(v3) => N2(v1) + N2(v4)       ! kVV10_N2N2*8.199*exp(13.223d0/Tgas**0.5)*0.84
+N2(v2) + N2(v4) => N2(v1) + N2(v5)       ! kVV10_N2N2*10.314*exp(19.834d0/Tgas**0.5)*0.8
+N2(v2) + N2(v5) => N2(v1) + N2(v6)       ! kVV10_N2N2*12.454*exp(26.445d0/Tgas**0.5)*0.76
+N2(v2) + N2(v6) => N2(v1) + N2(v7)       ! kVV10_N2N2*14.622*exp(33.057d0/Tgas**0.5)*0.72
+N2(v2) + N2(v7) => N2(v1) + N2(v8)       ! kVV10_N2N2*16.818*exp(39.668d0/Tgas**0.5)*0.68
+
+N2(v3) + N2 => N2(v2) + N2(v1)           ! kVV10_N2N2*3.037*exp(13.223d0/Tgas**0.5)*0.88
+N2(v3) + N2(v1) => N2(v2) + N2(v2)       ! kVV10_N2N2*6.112*exp(6.611d0/Tgas**0.5)*0.88
+N2(v3) + N2(v3) => N2(v2) + N2(v4)       ! kVV10_N2N2*12.375*exp(6.611d0/Tgas**0.5)*0.84
+N2(v3) + N2(v4) => N2(v2) + N2(v5)       ! kVV10_N2N2*15.566*exp(13.223d0/Tgas**0.5)*0.8
+N2(v3) + N2(v5) => N2(v2) + N2(v6)       ! kVV10_N2N2*18.797*exp(19.834d0/Tgas**0.5)*0.76
+N2(v3) + N2(v6) => N2(v2) + N2(v7)       ! kVV10_N2N2*22.069*exp(26.445d0/Tgas**0.5)*0.72
+N2(v3) + N2(v7) => N2(v2) + N2(v8)       ! kVV10_N2N2*25.383*exp(33.057d0/Tgas**0.5)*0.68
+
+N2(v4) + N2 => N2(v3) + N2(v1)           ! kVV10_N2N2*4.075*exp(19.834d0/Tgas**0.5)*0.84
+N2(v4) + N2(v1) => N2(v3) + N2(v2)       ! kVV10_N2N2*8.199*exp(13.223d0/Tgas**0.5)*0.84
+N2(v4) + N2(v2) => N2(v3) + N2(v3)       ! kVV10_N2N2*12.375*exp(6.611d0/Tgas**0.5)*0.84
+N2(v4) + N2(v4) => N2(v3) + N2(v5)       ! kVV10_N2N2*20.884*exp(6.611d0/Tgas**0.5)*0.8
+N2(v4) + N2(v5) => N2(v3) + N2(v6)       ! kVV10_N2N2*25.219*exp(13.223d0/Tgas**0.5)*0.76
+N2(v4) + N2(v6) => N2(v3) + N2(v7)       ! kVV10_N2N2*29.608*exp(19.834d0/Tgas**0.5)*0.72
+N2(v4) + N2(v7) => N2(v3) + N2(v8)       ! kVV10_N2N2*34.054*exp(26.445d0/Tgas**0.5)*0.68
+
+N2(v5) + N2 => N2(v4) + N2(v1)           ! kVV10_N2N2*5.125*exp(26.445d0/Tgas**0.5)*0.8
+N2(v5) + N2(v1) => N2(v4) + N2(v2)       ! kVV10_N2N2*10.314*exp(19.834d0/Tgas**0.5)*0.8
+N2(v5) + N2(v2) => N2(v4) + N2(v3)       ! kVV10_N2N2*15.566*exp(13.223d0/Tgas**0.5)*0.8
+N2(v5) + N2(v3) => N2(v4) + N2(v4)       ! kVV10_N2N2*20.884*exp(6.611d0/Tgas**0.5)*0.8
+N2(v5) + N2(v5) => N2(v4) + N2(v6)       ! kVV10_N2N2*31.721*exp(6.611d0/Tgas**0.5)*0.76
+N2(v5) + N2(v6) => N2(v4) + N2(v7)       ! kVV10_N2N2*37.242*exp(13.223d0/Tgas**0.5)*0.72
+N2(v5) + N2(v7) => N2(v4) + N2(v8)       ! kVV10_N2N2*42.834*exp(19.834d0/Tgas**0.5)*0.68
+
+N2(v6) + N2 => N2(v5) + N2(v1)           ! kVV10_N2N2*6.189*exp(33.057d0/Tgas**0.5)*0.76
+N2(v6) + N2(v1) => N2(v5) + N2(v2)       ! kVV10_N2N2*12.454*exp(26.445d0/Tgas**0.5)*0.76
+N2(v6) + N2(v2) => N2(v5) + N2(v3)       ! kVV10_N2N2*18.797*exp(19.834d0/Tgas**0.5)*0.76
+N2(v6) + N2(v3) => N2(v5) + N2(v4)       ! kVV10_N2N2*25.219*exp(13.223d0/Tgas**0.5)*0.76
+N2(v6) + N2(v4) => N2(v5) + N2(v5)       ! kVV10_N2N2*31.721*exp(6.611d0/Tgas**0.5)*0.76
+N2(v6) + N2(v6) => N2(v5) + N2(v7)       ! kVV10_N2N2*44.972*exp(6.611d0/Tgas**0.5)*0.72
+N2(v6) + N2(v7) => N2(v5) + N2(v8)       ! kVV10_N2N2*51.725*exp(13.223d0/Tgas**0.5)*0.68
+
+N2(v7) + N2 => N2(v6) + N2(v1)           ! kVV10_N2N2*7.266*exp(39.668d0/Tgas**0.5)*0.72
+N2(v7) + N2(v1) => N2(v6) + N2(v2)       ! kVV10_N2N2*14.622*exp(33.057d0/Tgas**0.5)*0.72
+N2(v7) + N2(v2) => N2(v6) + N2(v3)       ! kVV10_N2N2*22.069*exp(26.445d0/Tgas**0.5)*0.72
+N2(v7) + N2(v3) => N2(v6) + N2(v4)       ! kVV10_N2N2*29.608*exp(19.834d0/Tgas**0.5)*0.72
+N2(v7) + N2(v4) => N2(v6) + N2(v5)       ! kVV10_N2N2*37.242*exp(13.223d0/Tgas**0.5)*0.72
+N2(v7) + N2(v5) => N2(v6) + N2(v6)       ! kVV10_N2N2*44.972*exp(6.611d0/Tgas**0.5)*0.72
+N2(v7) + N2(v7) => N2(v6) + N2(v8)       ! kVV10_N2N2*60.729*exp(6.611d0/Tgas**0.5)*0.68
+
+N2(v8) + N2 => N2(v7) + N2(v1)           ! kVV10_N2N2*8.357*exp(46.279d0/Tgas**0.5)*0.68
+N2(v8) + N2(v1) => N2(v7) + N2(v2)       ! kVV10_N2N2*16.818*exp(39.668d0/Tgas**0.5)*0.68
+N2(v8) + N2(v2) => N2(v7) + N2(v3)       ! kVV10_N2N2*25.383*exp(33.057d0/Tgas**0.5)*0.68
+N2(v8) + N2(v3) => N2(v7) + N2(v4)       ! kVV10_N2N2*34.054*exp(26.445d0/Tgas**0.5)*0.68
+N2(v8) + N2(v4) => N2(v7) + N2(v5)       ! kVV10_N2N2*42.834*exp(19.834d0/Tgas**0.5)*0.68
+N2(v8) + N2(v5) => N2(v7) + N2(v6)       ! kVV10_N2N2*51.725*exp(13.223d0/Tgas**0.5)*0.68
+N2(v8) + N2(v6) => N2(v7) + N2(v7)       ! kVV10_N2N2*60.729*exp(6.611d0/Tgas**0.5)*0.68
+
+# V-V reactions of O2
+O2(v1) + O2(v1) => O2 + O2(v2)           ! kVV10_O2O2*2.015*exp(6.378d0/Tgas**0.5)
+O2(v1) + O2(v2) => O2 + O2(v3)           ! kVV10_O2O2*3.047*exp(12.756d0/Tgas**0.5)
+O2(v1) + O2(v3) => O2 + O2(v4)           ! kVV10_O2O2*4.094*exp(19.134d0/Tgas**0.5)
+
+O2(v2) + O2 => O2(v1) + O2(v1)           ! kVV10_O2O2*2.015*exp(6.378d0/Tgas**0.5)
+O2(v2) + O2(v2) => O2(v1) + O2(v3)       ! kVV10_O2O2*6.14*exp(6.378d0/Tgas**0.5)
+O2(v2) + O2(v3) => O2(v1) + O2(v4)       ! kVV10_O2O2*8.251*exp(12.756d0/Tgas**0.5)
+
+O2(v3) + O2 => O2(v2) + O2(v1)           ! kVV10_O2O2*3.047*exp(12.756d0/Tgas**0.5)
+O2(v3) + O2(v1) => O2(v2) + O2(v2)       ! kVV10_O2O2*6.14*exp(6.378d0/Tgas**0.5)
+O2(v3) + O2(v3) => O2(v2) + O2(v4)       ! kVV10_O2O2*12.472*exp(6.378d0/Tgas**0.5)
+ 
+O2(v4) + O2 => O2(v3) + O2(v1)           ! kVV10_O2O2*4.094*exp(19.134d0/Tgas**0.5)
+O2(v4) + O2(v1) => O2(v3) + O2(v2)       ! kVV10_O2O2*8.251*exp(12.756d0/Tgas**0.5)
+O2(v4) + O2(v2) => O2(v3) + O2(v3)       ! kVV10_O2O2*12.472*exp(6.378d0/Tgas**0.5)
+
+#-----------------------------------------------------------------------
+#
+# Electron impact electronic exciation and dissociation
+#
+#-----------------------------------------------------------------------
+
+# N2 Electronic excitation
+E + N2 => E + N2(A)                    ! BOLSIG N2 -> @R
+   @R = N2(A1)   N2(A2)   N2(A3)
+E + N2 => E + N2(B)                    ! BOLSIG N2 -> @R
+   @R = N2(B3PG)   N2(W3DU)  N2(B3SU-)
+E + N2 => E + N2(a')                   ! BOLSIG N2 -> @R
+   @R = N2(A1PG)  N2(A1SU-)  N2(W1DU)
+E + N2 => E + N2(C)                    ! BOLSIG N2 -> @R
+   @R = N2(C3PU)   N2(E3SG+)   N2(A1SG+)
+
+E + O2 => E + @B                       ! BOLSIG O2 -> @R
+    @B = O2(a1)     O2(b1)      O2*
+    @R = O2(a1Dg)   O2(b1Sg+)   O2(A3Su+,C3Du,c1Su-)
+
+E + O2 => E + O + O                    ! BOLSIG O2->O(3P)+O(3P)
+E + O2 => E + O + O(1D)                ! BOLSIG O2->O(3P)+O(1D)
+
+# Dissociation
+# It is assumed that these electronic states rapidly pass into the state H2(B3SIG), and predissociate to produce two H.
+#E + H2 => E + H + H                    ! BOLSIG H2 -> @R
+#    @R = H2(B3SU) H2(B1SU) H2(C3PU) H2(A3SG) H2(C1PU) H2(E1SG,F1SG) H2(E3SU) H2(B'1SU) H2(D1PU) H2(B''1SU) H2(D'1PU)
+
+#-----------------------------------------------------------------------
+#
+# Optical Transitions
+#
+#-----------------------------------------------------------------------
+# Optical transitions
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, New York.
+N2(A) => N2                        ! 0.50d0
+N2(B) => N2(A)                     ! 1.34d5
+N2(a') => N2                       ! 1.0d2
+N2(C) => N2(B)                     ! 2.45d7
+
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+O2(a1) => O2                          ! 2.6d-4
+O2(b1) => O2(a1)                      ! 1.5d-3
+O2(b1) => O2                          ! 8.5d-2
+O2* => O2                             ! 11.0d0
+
+# D. Liu, et al., Plasma Process. Polym. 7 (2010) 846-865.
+O(1D) => O                            ! 5.0d-3
+O(1S) => O(1D)                        ! 1.34d0
+
+## Quenching of Electronic Exciation
+#-----------------------------------------------------------------------
+#
+# quenching of excited states of N2
+#
+#-----------------------------------------------------------------------
+
+# Reactions of N2(A)
+# M. Capitelli, et al, Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, New York.
+N2(A) + N => N2 + N                !  2.0d-12
+N2(A) + N2 => N2 + N2              !  3.0d-16 
+N2(A) + N2(A) => N2 + N2(B)        !  3.0d-10
+N2(A) + N2(A) => N2 + N2(C)        !  1.5d-10
+N2(A) + H => N2 + H                !  2.1d-10
+N2(A) + H2 => N2 + H + H           !  2.0d-10*exp(-3500.0d0/Tgas)
+N2(A) + O => NO + N(2D)            !  7.0d-12
+N2(A) + O => N2 + O(1S)            !  2.1d-11  
+N2(A) + O2 => N2 + O + O(1D)       !  2.1d-12*(Tgas/300.0d0)**0.55
+N2(A) + O2 => N2 + O2(a1)          !  2.0d-13*(Tgas/300.0d0)**0.55 
+N2(A) + O2 => N2O + O              !  2.0d-14*(Tgas/300.0d0)**0.55
+N2(A) + NO => N2 + NO              !  6.9d-11
+N2(A) + N2O => N2 + N + NO         !  1.0d-11
+N2(A) + NO2 => N2 + O + NO         !  1.0d-12
+N2(A) + H2O => N2 + H + OH         !  5.0d-14
+N2(A) + OH => N2 + O + H           !  1.0d-10
+# N.A. Popov, Plasma Sources Sci. Technol. 25 (2016) 044003 (17pp).
+N2(A) + O2 => N2 + O + O           ! 1.7d-12*(Tgas/300.0d0)**0.5
+N2(A) + O2 => N2 + O2(b1)          ! 7.5d-13*(Tgas/300.0d0)**0.5 
+
+# Reactions of N2(B)
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, New York.
+N2(B) + N2 => N2(A) + N2           !  3.0d-11
+N2(B) + N2 => N2 + N2              !  2.0d-12
+N2(B) + H2 => N2(A) + H2           !  2.5d-11
+N2(B) + NO => N2(A) + NO           !  2.4d-10
+N2(B) + O2 => N2 + O + O           !  3.0d-10
+# N.A. Popov, Plasma Sources Sci. Technol. 25 (2016) 044003 (17pp).
+N2(B) + O => NO + N(2D)            !  3.0d-10
+
+# Reactions of N2(a')
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, New York.
+N2(a') + N2 => N2(B) + N2          !  1.9d-13
+N2(a') + NO => N2 + N + O          !  3.6d-10
+N2(a') + H => N2 + H               !  1.5d-10
+N2(a') + H2 => N2 + H + H          !  2.6d-11
+N2(a') + N2(A)  => N4^+ + E        !  4.0d-12
+N2(a') + N2(a') => N4^+ + E        !  1.0d-11
+# N.A. Popov, Plasma Sources Sci. Technol. 25 (2016) 044003 (17pp).
+N2(a') + O2 => N2 + O + O(1D)      !  2.8d-11
+N2(a') + O => NO + N(2D)           !  3.0d-10
+
+# Reactions of N2(C)
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, New York.
+N2(C) + N2 => N2(a') + N2          !  1.0d-11
+# N.A. Popov, Plasma Sources Sci. Technol. 25 (2016) 044003 (17pp).
+N2(C) + O2 => N2 + O + O(1D)       !  3.0d-10
+# Kobayashi, Sumire, et al. Plasma Sources Science and Technology 26.7 (2017): 075004.
+N2(C) + H2 => H + H + N2           !  3.0d-10
+# N.A. Popov, Plasma Sources Sci. Technol. 25 (2016) 044003 (17pp).
+N2(C) + O => NO + N(2D)            !  3.0d-10
+ 
+#-----------------------------------------------------------------------
+#
+# formation of excited states of N2
+#
+#-----------------------------------------------------------------------
+
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+N + N + @M => N2(A) + @M           !  @R
+   @M = N2       O2       NO       N        O 
+   @R = 1.7d-33  1.7d-33  1.7d-33  1.0d-32  1.0d-32
+
+N + N + @M => N2(B) + @M           !  @R
+   @M = N2       O2       NO       N        O 
+   @R = 2.4d-33  2.4d-33  2.4d-33  1.4d-32  1.4d-32
+
+#-----------------------------------------------------------------------
+#
+# Quenching of excited states of N
+#
+#-----------------------------------------------------------------------
+
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+N(2D) + O => N + O(1D)              !  4.0d-13
+N(2D) + N2O => NO + N2              !  3.5d-12 
+N(2D) + H2 => NH + H                !  2.3d-12
+
+# N.A. Popov, Plasma Sources Sci. Technol. 25 (2016) 044003 (17pp).
+N(2D) + O2 => NO + O(1D)            !  7.3d-12*exp(-185.0d0/Tgas)
+N(2D) + O2 => NO + O                !  2.4d-12*exp(-185.0d0/Tgas)
+N(2D) + O => N + O                  !  1.8d-12
+N(2D) + NO => O + N2                !  6.0d-11
+N(2D) + NO => O(1D) + N2            !  6.0d-11
+N(2D) + N2 => N + N2                !  1.7d-14
+
+
+#-----------------------------------------------------------------------
+#
+# Quenching of excited states of O2
+#
+#-----------------------------------------------------------------------
+
+# Reactions of O2(a1)
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+O2(a1) + O => O2 + O                          ! 7.0d-16
+O2(a1) + N  => NO + O                         !  2.0d-14*exp(-600.0d0/Tgas)
+O2(a1) + O2 => O2 + O2                        ! 3.8d-18*exp(-205.0d0/Tgas)
+O2(a1) + N2 => O2 + N2                        ! 3.0d-21
+O2(a1) + NO => O2 + NO                        !  2.5d-11
+O2(a1) + O3 => O2 + O2 + O(1D)                ! 5.2d-11*exp(-2840.0d0/Tgas)
+O2(a1) + O2(a1) => O2 + O2(b1)                ! 7.0d-28*Tgas**3.8*exp(700.0d0/Tgas) 
+# R. Atkinson, et al., Atmos. Chem. Phys. Discuss. 3 (2003) 6179-6699.
+O2(a1) + H2O => O2 + H2O                      ! 5.0d-18
+O2(a1) + CO2 => O2 + CO2                      ! 2.0d-20
+# N.A. Popov, Plasma Sources Sci. Technol. 20 (2011) 045002.
+O2(a1) + H2 => OH + OH                        ! 2.8d-9*exp(-17906.0d0/Tgas)
+O2(a1) + H2 => O2 + H2                        ! 4.5d-18*(Tgas/300.0d0)**0.5
+# A. A. Chukalovsky, et al., J. Phys. D: Appl. Phys. 49 (2016) 485202.
+# The third-body coefficients of H + O2(a1)(+M) => HO2(+M) are assumed as the same as O2.
+O2(a1) + H => OH + O                          ! kR1
+O2(a1) + H => HO2                             ! kR2
+O2(a1) + H => O2 + H                          ! KR3
+# A. Starik and A. Sharipov, Phys. Chem. Chem. Phys. 13 (2011) 16424-16436.
+O2(a1) + H2 => H + HO2                        ! 1.84d-16*Tgas**1.88*exp(-17070.0d0/Tgas)
+O2(a1) + H2O => OH + HO2                      ! 3.40d-9*exp(-24990.0d0/Tgas)
+# L.B. Ibraguimova, et al., Institute of Mechanics of Lomonosov, Moscow State University, 2003.
+O2(a1) + H2 => H2O + O(1D)                    ! 5.81d-11*exp(-20000.0d0/Tgas)
+O2(a1) + OH => H + O3                         ! 7.31d-17*Tgas**1.44d0*exp(-27225.0d0/Tgas)
+O2(a1) + OH => O + HO2                        ! 2.16d-11*exp(-17000.0d0/Tgas)
+O2(a1) + OH => O2 + OH                        ! 5.65d-18
+O2(a1) + H2O2 => O2 + H2O2                    ! 5.65d-18
+O2(a1) + HO2 => O2 + HO2                      ! 5.65d-18
+# D. Liu, et al., Plasma Process. Polym. 7 (2010) 846-865.
+O2(a1) + O2 => O3 + O                         ! 2.95d-21*(Tgas/300.0d0)**0.5
+O2(a1) + O2(a1) => O2 + O2                    ! 9.0d-17*exp(-560.0d0/Tgas)
+O + O2(a1) + O2 => O + O2 + O2                ! 1.0d-32
+# A. Starikovskiy and N. Aleksandrov, Mechanism of Plasma-Assisted Ignition for H2 and C1-C5 Hydrocarbons, 55th AIAA Aerospace Sciences Meeting, 2017.
+O2(a1) + H2 => O2(b1) + H2                    ! 8.3d-13*exp(-7660.0d0/Tgas)
+O2(a1) + H2O => O + H2O2                      ! 2.05d-12*Tgas**0.5*exp(-35100.d0/Tgas)
+# F. Zhang, et al., Proc. Combust. Inst. 38 (2020).
+# 1 atm, 300-2000 K
+O2(a1) + CH3 => O2 + CH3                      ! 3.95d-12*Tgas**0.11d0*exp(-4695.0d0/Tgas)
+O2(a1) + CH3 => CH2O + OH                     ! 9.98d-14*Tgas**0.47d0*exp(-4780.6d0/Tgas)
+O2(a1) + CH3 => CH3O + O                      ! 1.94d-22*Tgas**3.25d0*exp(-4956.7d0/Tgas)
+# N. Tsolas, R.A. Yetter, I.V. Adamovich, Combust. Flame 176 (2017) 462-478.
+O2(a1) + CH2O => HO2 + HCO                    ! 1.66d-10*exp(-11600.0d0/Tgas)
+# J.K. Lefkowitz, et al, Proc. Combust. Inst. 35 (3) (2015) 3505-3512. 
+O2(a1) + CO => CO2 + O                        ! 5.25d-13*exp(-14446.0d0/Tgas)
+
+# Reactions of O2(b1)
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+O2(b1) + O => O2(a1) + O                      ! 8.1d-14
+O2(b1) + O => O2 + O(1D)                      ! 3.4d-11*(300.0d0/Tgas)**0.1*exp(-4200.0d0/Tgas)
+O2(b1) + O2 => O2(a1) + O2                    ! 4.3d-22*Tgas**2.4*exp(-281.0d0/Tgas)
+O2(b1) + O3 => O2 + O2 + O                    ! 2.2d-11
+O2(b1) + N2 => O2(A1) + N2                    ! 1.7d-15*(Tgas/300.0d0)
+O2(b1) + NO => O2(a1) + NO                    ! 6.0d-14
+# W.V. Gaens and A. Bogaerts, J. Phys. D: Appl. Phys. 46 (2013) 275201.
+O2(b1) + O => O2 + O                          ! 8.0d-15*(Tgas/300.0d0)**0.5d0
+O2(b1) + H => O2(a1) + H                      ! 7.2d-14*(Tgas/300.0d0)**0.5d0
+O2(b1) + H => O2 + H                          ! 8.0d-15*(Tgas/300.0d0)**0.5d0
+O2(b1) + O2(b1) => O2(a1) + O2                ! 3.6d-17*(Tgas/300.0d0)**0.5d0
+O2(b1) + H2 => O2 + H2                        ! 4.9d-15*exp(-253.0d0/Tgas)
+O2(b1) + H2O => O2 + H2O                      ! 2.3d-12
+O2(b1) + O3 => O2(a1) + O2 + O                ! 1.0d-14
+O2(b1) + O3 => O2 + O3                        ! 2.2d-11
+O2(b1) + O3 => O2(a1) + O3                    ! 2.2d-11
+# A. Starik and A. Sharipov, Phys. Chem. Chem. Phys. 13 (2011) 16424-16436.
+O2(b1) + H2 => H + HO2                        ! 3.49d-11*exp(-20500.0d0/Tgas)
+O2(b1) + H => OH + O(1D)                      ! 4.38d-10/Tgas**0.03d0*exp(-16210.0d0/Tgas)
+O2(b1) + H2O => OH + HO2                      ! 3.40d-9*exp(-27380.0d0/Tgas)
+# N.A. Popov, Plasma Sources Sci. Technol. 20 (2011) 045002.
+O2(b1) + H2 => O2(a1) + H2                    ! 1.00d-12
+# R. Atkinson, et al, Atmos. Chem. Phys. Discuss. 3 (2003) 6179-6699.
+O2(b1) + O2 => O2 + O2                        ! 4.1d-17
+O2(b1) + H2O => O2(a1) + H2O                  ! 4.6d-12
+# A. Starikovskiy and N. Aleksandrov, Mechanism of Plasma-Assisted Ignition for H2 and C1-C5 Hydrocarbons, 55th AIAA Aerospace Sciences Meeting, 2017.
+O2(b1) + H2O => O + H2O2                      ! 2.05d-12*Tgas*0.5*exp(-27480.0d0/Tgas)
+O2(b1) + HO2 => O2 + HO2                      ! 5.65d-18
+O2(b1) + H2O2 => O2 + H2O2                    ! 5.65d-18
+# J.K. Lefkowitz, et al., Proc. Combust. Inst. 35 (3) (2015) 3505-3512. 
+O2(b1) + OH => O + HO2                        ! 2.16d-11*exp(-10111.0d0/Tgas)
+O2(b1) + CO => CO2 + O                        ! 5.25d-13*exp(-12197.0d0/Tgas)
+
+# Reactions of O2*
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+O2* + O => O2 + O(1S)                       ! 9.0d-12
+O2* + O2 => O2(b1) + O2(b1)                 ! 3.0d-13
+O2* + N2 => O2(b1) + N2                     ! 9.0d-15
+# A.N. Vasiljeva, et al., J. Phys. D: Appl. Phys. 37 (2004) 2455-2468.
+O2* + O => O2 + O                           ! 4.95d-12
+O2* + O => O2(a1) + O(1D)                   ! 2.7d-12
+O2* + O => O2(b1) + O(1D)                   ! 1.35d-12
+O2* + O2 => O2(a1) + O2                     ! 1.86d-13
+O2* + O2 => O2(b1) + O2                     ! 2.1d-14
+O2* + O2 => O2 + O2                         ! 2.3d-14
+# A. Starikovskiy and N. Aleksandrov, Mechanism of Plasma-Assisted Ignition for H2 and C1-C5 Hydrocarbons, 55th AIAA Aerospace Sciences Meeting, 2017.
+O2* + H2 => H2 + O2                         ! 7.9d-13
+O2* + H2 => H2 + O2(a1)                     ! 8.3d-13
+O2* + H2O => H2O + O2 			            ! 4.0d-12       
+O2* + HO2 => HO2 + O2                       ! 5.65d-18
+O2* + H2O2 => H2O2 + O2                     ! 5.65d-18
+
+#-----------------------------------------------------------------------
+#
+# Quenching of excited states of O
+#
+#-----------------------------------------------------------------------
+
+# Reactions of O(1D)
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+O(1D) + O => O + O                           ! 8.0d-12
+O(1D) + O2 => O + O2                         ! 6.4d-12*exp(67.0d0/Tgas)
+O(1D) + O2 => O + O2(a1)                     ! 1.0d-12
+O(1D) + O2 => O + O2(b1)                     ! 2.6d-11*exp(67.0d0/Tgas)
+O(1D) + O3 => O2 + O + O                     ! 1.2d-10
+O(1D) + O3 => O2 + O2                        ! 1.2d-10
+O(1D) + N2 => O + N2                         ! 2.3d-11
+O(1D) + NO => O2 + N                         !  1.7d-10
+O(1D) + N2O => NO + NO                       !  7.2d-11
+O(1D) + N2O => O2 + N2                       !  4.4d-11
+# I.S. Flectcher and D. Husain, Can. J. Chem. 54 (1976) 1765-1770.
+O(1D) + H2O2 => HO2 + OH                     ! 5.2d-10
+# S. Vranckx, et al., Phys. Chem. Chem. Phys.,12 (2010), 9213-9221.
+O(1D) + H2O => OH + OH                       ! 0.99*1.7d-10*exp(36.0d0/Tgas)  
+O(1D) + H2O => O + H2O                       ! 0.01*1.7d-10*exp(36.0d0/Tgas)
+O(1D) + H2 => OH + H                         ! 0.993*1.35d-10
+O(1D) + H2 => O + H2                         ! 0.007*1.35d-10
+# W.B. DeMore, et al, Chemical Kinetics and Potochemical Data for Use in Stratospheric Modeling - Evaluation No. 12, JPL Publication 97-4, Jan. 1997.
+O(1D) + CO2 => O + CO2                       ! 7.4d-11
+# J.A. Davidson, et al, J. Chem. Phys. 69 (1978) 1216-1217.
+O(1D) + CO => O + CO                         ! 4.7d-11*exp(-62.4d0/Tgas
+# D. Liu, et al., Plasma Sources Sci. Technol. 19 (2010) 025018 (22pp).
+O(1D) + OH => H + O2                         ! 6.0d-11/Tgas**0.186*exp(-154.0d0/Tgas)
+O(1D) + HO2 => OH + O2                       ! 2.9d-11*exp(200.0d0/Tgas)
+# N. Tsolas, R.A. Yetter, I.V. Adamovich, Combust. Flame 176 (2017) 462-478.
+O(1D) + CH2O => CO + H2O                     ! 1.66d-10
+O(1D) + CH3OH => CH2OH + OH                  ! 2.99d-10
+
+# Reactions of O(1S)
+# I.A. Kossyi, et al., Plasma Sources Sci. Technol. 1 (1992) 207-220.
+O(1S) + O => O(1D) + O                       ! 5.0d-11*exp(-301.0d0/Tgas)
+# M. Capitelli, et al, Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, New York.
+O(1S) + N  => O + N                          !  1.0d-12
+O(1S) + O2 => O(1D) + O2                     !  1.3d-12*exp(-850.0d0/Tgas)
+O(1S) + N2 => O + N2                         !  1.0d-17
+O(1S) + O2 => O + O + O                      !  3.0d-12*exp(-850.0d0/Tgas)
+O(1S) + O2(a1) => O + O2*                    !  1.1d-10
+O(1S) + O2(a1) => O(1D) + O2(b1)             !  2.9d-11
+O(1S) + O2(a1) => O + O + O                  !  3.2d-11
+O(1S) + O3 => O2 + O2                        !  2.9d-10
+O(1S) + O3 => O2 + O + O(1D)                 !  2.9d-10
+O(1S) + NO => O + NO                         !  2.9d-10
+O(1S) + NO => O(1D) + NO                     !  5.1d-10
+O(1S) + N2O => O + N2O                       !  6.3d-12
+O(1S) + N2O => O(1D) + N2O                   !  3.1d-12
+# D. Liu, et al., Plasma Process. Polym. 7 (2010) 846-865.
+O(1S) + O => O + O                           ! 3.33d-11*exp(-300.0d0/Tgas)
+O(1S) + O2 => O + O2                         ! 1.6d-12*exp(-850.0d0/Tgas)
+# D. Liu, et al., Plasma Sources Sci. Technol. 19 (2010) 025018 (22pp).
+O(1S) + H2 => H + OH                         ! 2.6d-16
+O(1S) + OH => H + O2                         ! 6.0d-11/Tgas**0.186*exp(-154.0d0/Tgas)
+O(1S) + HO2 => OH + O2                       ! 2.9d-11*exp(200.0d0/Tgas)
+O(1S) + H2O => O(1D) + H2O                   ! 1.5d-10
+O(1S) + H2O => O + H2O                       ! 4.5d-11  
+O(1S) + H2O => OH + OH                       ! 3.0d-10
+O(1S) + H2O => H2 + O2                       ! 2.2d-12
+
+#-----------------------------------------------------------------------
+#
+# O3 reactions
+#
+#-----------------------------------------------------------------------
+
+# A.N. Vasiljeva, et al., J. Phys. D: Appl. Phys. 37 (2004) 2455-2468.
+O3 + O => O2 + O2(b1)               ! 8.0d-14*exp(-2060.0d0/Tgas)
+# M. Capitelli, et al., Plasma Kinetics in Atmospheric Gases, Springer-Verlag, Berlin, Heidelberg, 2000.
+O3 + O => O2 + O2(a1)               ! 1.0d-11*exp(-2300.0d0/Tgas)
+
+#-----------------------------------------------------------------------
+#
+# Three-body and dissociation reactions 
+#
+#-----------------------------------------------------------------------
+
+# D. Liu, et al., Plasma Process. Polym. 7 (2010) 846-865.
+O + O + O2 => O2 + O2(a1)         ! 1.93d-35*(Tgas/300.0d0)**-0.63
+
+
+# DME related
+#Ionization
+#Kosarev, Ilya N., et al. Combustion and Flame 203 (2019): 72-82.
+e + CH3OCH3 => e + e + CH3OCH3^+  !BOLSIG+ CH3OCH3 -> CH3OCH3+ 
+
+# Vibrational Excitation
+e + CH3OCH3 => e + CH3OCH3  !BOLSIG+ CH3OCH3 -> CH3OCH3(v1)
+e + CH3OCH3 => e + CH3OCH3  !BOLSIG+ CH3OCH3 -> CH3OCH3(v2)
+e + CH3OCH3 => e + CH3OCH3  !BOLSIG+ CH3OCH3 -> CH3OCH3(v3)
+e + CH3OCH3 => e + CH3OCH3  !BOLSIG+ CH3OCH3 -> CH3OCH3(v4)
+e + CH3OCH3 => e + CH3OCH3  !BOLSIG+ CH3OCH3 -> CH3OCH3(v5)
+
+# Recombination
+#Kosarev, Ilya N., et al. Combustion and Flame 203 (2019): 72-82.
+e + CH3OCH3^+ => O + CH3 + CH3    !1.5d-7*(Te/300)^-0.5   
+e + CH3OCH3^+ => CH2O + CH4       !3.0d-7*(Te/300)^-0.5   
+e + CH3OCH3^+ => CH2 + CH3OH      !1.5d-7*(Te/300)^-0.5  
+
+e + CH3OCH3^+ => H + CH3OCH2    !1.5d-7*(Te/300)^-0.5   
+e + CH3OCH3^+ => CH3O + CH3     !1.5d-7*(Te/300)^-0.5
+
+# Disociation
+#Kosarev, Ilya N., et al. Combustion and Flame 203 (2019): 72-82.
+e + CH3OCH3 => e + CH3OCH2 + H    !BOLSIG+ CH3OCH3 -> CH3OCH2 + H 
+e + CH3OCH3 => e + CH3O + CH3     !BOLSIG+ CH3OCH3 -> CH3O + CH3
+
+# quenching of DME by O2
+#Kosarev, Ilya N., et al. Combustion and Flame 203 (2019): 72-82.
+O(1D) + CH3OCH3 => CH2OH + CH3O   !6.3e-10   
+O2* + CH3OCH3 => O2 + CH3O + CH3  !1.0e-10
+
+#Zhang, Ruzheng, et al. Combustion and Flame 225 (2021): 388-394.
+O2(a1) + CH3OCH3 => O2 + CH3OCH3             ! 5.46d-10*exp(-5850.d0/Tgas)
+O2(a1) + CH3OCH3 => CH3OCH2 + HO2            ! 7.010d-11*exp(-17620.d0/Tgas)
+O2(b1) + CH3OCH3 => O2(a1) + CH3OCH3         ! 1.08d-13
+
+# quenching of DME by N2
+# Estimation by this work
+N2(A) + CH3OCH3 => N2 + CH3O + CH3            ! 3.0d-10
+N2(B) + CH3OCH3 => N2 + CH3O + CH3            ! 3.0d-10
+N2(a') + CH3OCH3 => N2 + CH3O + CH3           ! 3.0d-10
+N2(C) + CH3OCH3 => N2 + CH3O + CH3            ! 5.0d-10
+
+
+END

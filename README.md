@@ -9,3 +9,6 @@ PCI_Stability/
 
 * Zhong, Hongtao, et al. "Dynamics and Chemical Mode Analysis of Plasma Thermal-Chemical Instability." In preparation.
 
+PCI_DME/
+
+* Zhong, Hongtao, et al. "Plasma Thermal-Chemical Instability of Dimethyl Ether Oxidation Sustained by Repetitive Nanosecond Pulses" In preparation.
